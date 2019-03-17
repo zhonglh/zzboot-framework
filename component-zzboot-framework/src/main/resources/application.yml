@@ -1,0 +1,39 @@
+
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    session:
+      cookie:
+        http-only: false
+        secure: false
+
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+  messages:
+    encoding: UTF-8
+  profiles:
+    active: dev
+  resources:
+    chain:
+      strategy:
+        content:
+          #资源名-md5
+          enabled: true
+      cache: true
+
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+    servlet:
+      content-type:  text/html
+
+  main:
+    allow-bean-definition-overriding: true

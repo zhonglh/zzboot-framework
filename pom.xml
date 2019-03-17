@@ -21,7 +21,7 @@
 
   <modules>
     <module>component-zzboot-config</module>
-      <module>component-zzboot-framework</module>
+    <module>component-zzboot-framework</module>
   </modules>
 
   <properties>
@@ -130,6 +130,19 @@
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
       <version>1.23</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>4.1.10</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.penggle</groupId>
+      <artifactId>kaptcha</artifactId>
+      <version>2.3.2</version>
     </dependency>
 
 

@@ -25,6 +25,11 @@ spring:
           enabled: true
       cache: true
 
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+
   redis:
     # Redis数据库索引（默认为0）
     database: 0

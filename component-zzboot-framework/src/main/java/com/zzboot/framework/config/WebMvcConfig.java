@@ -2,10 +2,13 @@
 
 package com.zzboot.framework.config;
 
+import com.zzboot.framework.core.xss.XssFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -58,6 +61,19 @@ public class WebMvcConfig extends RequestMappingHandlerMapping
 				.addResolver(new VersionResourceResolver().addContentVersionStrategy("/**"));
 		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
 				.resourceChain(true).addResolver(new VersionResourceResolver().addContentVersionStrategy("/**"));
+	}
+
+
+
+
+	@Bean
+	public FilterRegistrationBean xssFilterRegistration() {
+		XssFilter xssFilter = new XssFilter();
+		// 这里可以加不被xss过滤的接口
+		// xssFilter.setUrlExclusion(Arrays.asList("/notice/update", "/notice/add"));
+		FilterRegistrationBean registration = new FilterRegistrationBean(xssFilter);
+		registration.addUrlPatterns("/*");
+		return registration;
 	}
 
 	/**

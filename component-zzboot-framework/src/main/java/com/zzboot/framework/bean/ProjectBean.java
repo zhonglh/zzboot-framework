@@ -20,7 +20,6 @@ public class ProjectBean {
     private String description;
     private String serviceUrl;
     private String version;
-    private String basePackage;
 
     public String getName() {
         return name;
@@ -54,11 +53,4 @@ public class ProjectBean {
         this.version = version;
     }
 
-    public String getBasePackage() {
-        return basePackage;
-    }
-
-    public void setBasePackage(String basePackage) {
-        this.basePackage = basePackage;
-    }
 }

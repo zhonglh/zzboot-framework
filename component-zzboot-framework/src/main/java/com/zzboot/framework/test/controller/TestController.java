@@ -1,7 +1,7 @@
-package com.zzboot.framework.controller;
+package com.zzboot.framework.test.controller;
 
 
-import com.zzboot.framework.dao.TestMapper;
+import com.zzboot.framework.test.dao.TestMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

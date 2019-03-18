@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.format.FormatterRegistry;
@@ -32,7 +31,6 @@ import javax.servlet.ServletException;
 @Slf4j
 @Configuration
 @ConditionalOnWebApplication
-@ComponentScan(value = "com")
 public class WebMvcConfig extends RequestMappingHandlerMapping
 		implements WebMvcConfigurer, ServletContextInitializer, WebMvcRegistrations {
 

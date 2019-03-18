@@ -1,6 +1,7 @@
-package com.zzboot.framework.entity;
+package com.zzboot.framework.test.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.zzboot.util.config.annotaions.*;
 
 /**
@@ -8,6 +9,7 @@ import com.zzboot.util.config.annotaions.*;
  * @author Administrator
  * @date 2019-4-10 11:08:55
  */
+@TableName("Ts_Dep")
 public class TsDepEntity extends com.zzboot.framework.core.db.entity.BaseBusinessExEntity<String> implements java.io.Serializable{
 
     @TableField(exist=false)

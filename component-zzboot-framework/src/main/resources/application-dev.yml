@@ -9,7 +9,6 @@ spring:
       username: root
       password: root
 
-
       # 连接池配置
       initial-size: 10
       min-idle: 10

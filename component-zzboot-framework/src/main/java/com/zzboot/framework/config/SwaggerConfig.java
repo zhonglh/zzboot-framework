@@ -1,5 +1,8 @@
 package com.zzboot.framework.config;
 
+import com.zzboot.framework.bean.ProjectBean;
+import org.apache.tools.ant.Project;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -11,26 +14,29 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
-@Configuration(value="false")
+@Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+
+    @Autowired
+    private ProjectBean projectBean;
 
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.fc.test"))
+                .apis(RequestHandlerSelectors.basePackage(projectBean.getBasePackage()))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("springboot利用swagger构建api文档")
-                .description("简单优雅的restfun风格，http://blog.csdn.net/saytime")
-                .termsOfServiceUrl("http://blog.csdn.net/saytime")
-                .version("1.0")
+                .title(projectBean.getName())
+                .description(projectBean.getDescription())
+                .termsOfServiceUrl(projectBean.getServiceUrl())
+                .version(projectBean.getVersion())
                 .build();
     }
 }

@@ -7,16 +7,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author Admin
  */
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.zzboot")
 @ServletComponentScan
 @EnableTransactionManagement
 @EnableCaching
+@EnableScheduling
 @MapperScan(value = {"com.zzboot.**.dao"})
 public class FrameworkApplication
 {

@@ -1,4 +1,4 @@
-package com.zzboot;
+package com.zzboot.framework;
 
 
 import lombok.extern.slf4j.Slf4j;

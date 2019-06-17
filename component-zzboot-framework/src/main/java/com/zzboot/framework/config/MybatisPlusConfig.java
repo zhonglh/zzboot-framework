@@ -1,9 +1,7 @@
 
 package com.zzboot.framework.config;
 
-import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
-import com.baomidou.mybatisplus.core.parser.ISqlParser;
 import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
@@ -13,16 +11,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 配置mybatis plus
- * @author SanLi
  */
 @EnableTransactionManagement
 @Configuration
-@MapperScan(value = {"com.**.dao" , "org.**.dao"})
 public class MybatisPlusConfig {
 
 	/**

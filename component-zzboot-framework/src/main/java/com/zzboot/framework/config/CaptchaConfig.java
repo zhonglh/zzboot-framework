@@ -21,7 +21,7 @@ import static com.google.code.kaptcha.Constants.KAPTCHA_TEXTPRODUCER_FONT_NAMES;
 @Slf4j
 @Configuration
 @ConditionalOnBean(CaptchaBean.class)
-public class CaptchaConfiguration {
+public class CaptchaConfig {
 
 
     @Autowired

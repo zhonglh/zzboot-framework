@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Configuration
 @ConditionalOnResource(resources={"captcha.properties"})
-
 @ConfigurationProperties(prefix="captcha")
 @PropertySource("classpath:captcha.properties")
 @Component

@@ -1,4 +1,4 @@
-package com.zzboot.framework.core.db.base.dao;
+package com.zzboot.framework.core.db.base.daointerface;
 
 import java.util.List;
 

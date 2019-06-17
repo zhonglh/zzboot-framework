@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryCha
 import com.baomidou.mybatisplus.extension.service.additional.update.impl.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.zzboot.framework.core.db.base.dao.BaseDAO;
+import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.base.service.BaseService;
 import com.zzboot.framework.core.db.entity.BaseEntity;
 import com.zzboot.util.base.java.GenericsHelper;
@@ -21,7 +21,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;

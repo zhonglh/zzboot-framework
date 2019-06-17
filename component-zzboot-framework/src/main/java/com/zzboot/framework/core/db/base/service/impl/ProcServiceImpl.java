@@ -1,6 +1,6 @@
 package com.zzboot.framework.core.db.base.service.impl;
 
-import com.zzboot.framework.core.db.base.dao.ProcDAO;
+import com.zzboot.framework.core.db.base.daointerface.ProcDAO;
 import com.zzboot.framework.core.db.base.service.ProcService;
 import com.zzboot.framework.core.db.entity.BaseEntity;
 

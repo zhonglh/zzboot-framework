@@ -1,4 +1,4 @@
-package com.zzboot.framework.core.db.base.dao;
+package com.zzboot.framework.core.db.base.daointerface;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzboot.framework.core.db.entity.BaseEntity;

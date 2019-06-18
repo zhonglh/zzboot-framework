@@ -3,6 +3,7 @@
 package com.zzboot.framework.config;
 
 import com.zzboot.framework.core.xss.XssFilter;
+import com.zzboot.framework.filter.CachingHttpHeadersFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
@@ -20,9 +21,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.resource.VersionResourceResolver;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
+import java.util.EnumSet;
 
 
 /**
@@ -62,6 +65,16 @@ public class WebMvcConfig extends RequestMappingHandlerMapping
 	}
 
 
+	/**
+	 * 初始化缓存HTTP标头过滤器
+	 */
+	private void initCachingHttpHeadersFilter(ServletContext servletContext, EnumSet<DispatcherType> disps) {
+		log.debug("注册缓存HTTP标头过滤器");
+		FilterRegistration.Dynamic cachingHttpHeadersFilter = servletContext
+				.addFilter("cachingHttpHeadersFilter", new CachingHttpHeadersFilter());
+		cachingHttpHeadersFilter.addMappingForUrlPatterns(disps, true, "/webjars/*", "/static/*");
+		cachingHttpHeadersFilter.setAsyncSupported(true);
+	}
 
 
 	@Bean
@@ -76,8 +89,6 @@ public class WebMvcConfig extends RequestMappingHandlerMapping
 
 	/**
 	 * 配置默认Servlet处理
-	 *
-	 * @param configurer {@link DefaultServletHandlerConfigurer}
 	 */
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -89,8 +100,6 @@ public class WebMvcConfig extends RequestMappingHandlerMapping
 
 	/**
 	 * 时间配置
-	 *
-	 * @param registry {@link FormatterRegistry}
 	 */
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
@@ -103,5 +112,9 @@ public class WebMvcConfig extends RequestMappingHandlerMapping
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 
+		EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
+
+		//初始化缓存HTTP标头过滤器
+		initCachingHttpHeadersFilter(servletContext, dispatcherTypes);
 	}
 }

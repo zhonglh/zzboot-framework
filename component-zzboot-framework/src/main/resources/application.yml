@@ -42,11 +42,6 @@ spring:
     password:
 
 
-  cache:
-    ehcache:
-      config: 'classpath:ehcache.xml'
-
-
 
   thymeleaf:
     prefix: classpath:/templates/

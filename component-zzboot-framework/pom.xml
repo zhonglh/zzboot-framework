@@ -51,14 +51,20 @@
             <artifactId>zzboot-util-spring</artifactId>
             <version>${zzboot.util.version}</version>
         </dependency>
-
-
-
         <dependency>
             <groupId>com.zzboot.util</groupId>
             <artifactId>zzboot-util-web</artifactId>
             <version>${zzboot.util.version}</version>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>com.zzboot.util</groupId>
+            <artifactId>zzboot-util-poi</artifactId>
+            <version>${zzboot.util.version}</version>
+        </dependency>
+
 
     </dependencies>
 

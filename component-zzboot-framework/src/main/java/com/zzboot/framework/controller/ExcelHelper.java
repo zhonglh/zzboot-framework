@@ -2,32 +2,32 @@ package com.zzboot.framework.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zz.bms.core.db.entity.BaseEntity;
-import com.zz.bms.core.db.entity.EntityUtil;
-import com.zz.bms.core.db.entity.ILoginUserEntity;
-import com.zz.bms.core.enums.EnumSymbol;
-import com.zz.bms.core.exceptions.BizException;
-import com.zz.bms.util.base.data.StringFormatKit;
-import com.zz.bms.util.configs.AppConfig;
-import com.zz.bms.util.configs.annotaions.*;
-import com.zz.bms.util.poi.ExcelDictHolder;
-import com.zz.bms.util.poi.enums.EnumExcelFileType;
-import com.zz.bms.util.poi.exceptions.ExcelAbsenceException;
-import com.zz.bms.util.poi.exceptions.ExcelFormatException;
-import com.zz.bms.util.poi.exceptions.ExcelTypeMatchingException;
-import com.zz.bms.util.poi.export.ExcelExport;
-import com.zz.bms.util.poi.export.excelype.BaseXlsTemplet;
-import com.zz.bms.util.poi.export.filetype.HssfExport;
-import com.zz.bms.util.poi.export.filetype.SxssfExport;
-import com.zz.bms.util.poi.imports.DefaultExcelImport;
-import com.zz.bms.util.poi.imports.ExcelImport;
-import com.zz.bms.util.poi.util.ColumnUtil;
-import com.zz.bms.util.poi.util.ExcelUtil;
-import com.zz.bms.util.poi.vo.Column;
-import com.zz.bms.util.spring.ReflectionUtil;
-import com.zz.bms.util.spring.SpringUtil;
+import com.zzboot.framework.core.db.entity.BaseEntity;
+import com.zzboot.framework.core.db.entity.EntityUtil;
+import com.zzboot.framework.core.db.entity.ILoginUserEntity;
+import com.zzboot.framework.core.enums.EnumSymbol;
+import com.zzboot.framework.core.exceptions.BizException;
+import com.zzboot.util.base.data.StringFormatKit;
+import com.zzboot.util.config.Global;
+import com.zzboot.util.config.annotaions.*;
+import com.zzboot.util.poi.ExcelDictHolder;
+import com.zzboot.util.poi.enums.EnumExcelFileType;
+import com.zzboot.util.poi.exceptions.ExcelAbsenceException;
+import com.zzboot.util.poi.exceptions.ExcelFormatException;
+import com.zzboot.util.poi.exceptions.ExcelTypeMatchingException;
+import com.zzboot.util.poi.export.ExcelExport;
+import com.zzboot.util.poi.export.excelype.BaseXlsTemplet;
+import com.zzboot.util.poi.export.filetype.HssfExport;
+import com.zzboot.util.poi.export.filetype.SxssfExport;
+import com.zzboot.util.poi.imports.DefaultExcelImport;
+import com.zzboot.util.poi.imports.ExcelImport;
+import com.zzboot.util.poi.util.ColumnUtil;
+import com.zzboot.util.poi.util.ExcelUtil;
+import com.zzboot.util.poi.vo.Column;
+import com.zzboot.util.spring.ReflectionUtil;
+import com.zzboot.util.spring.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,10 +43,10 @@ import java.util.Map;
 /**
  * @author admin
  */
+@Slf4j
 public class ExcelHelper {
 
 
-    public static Logger logger = Logger.getLogger(ExcelHelper.class);
 
 
     /**
@@ -57,7 +57,7 @@ public class ExcelHelper {
      * @param <QueryModel>
      * @return
      */
-    public static <QueryModel>  Object[] buildKeyObject(QueryModel m , EntityAttrFkAnnotation fkAnnotation,String[] keyFieldNames , IExcelConttroller conttroller ){
+    public static <QueryModel>  Object[] buildKeyObject(QueryModel m , EntityAttrFkAnnotation fkAnnotation, String[] keyFieldNames , IExcelConttroller conttroller ){
         Object[] result = new Object[keyFieldNames.length];
 
         List<Field> fs = ReflectionUtil.getAllFields(conttroller.getRwEntityClass() , BaseEntity.class);
@@ -159,7 +159,7 @@ public class ExcelHelper {
             try {
                 setErrorMethod.invoke(m , msg);
             } catch (Exception e) {
-                logger.error(e.getMessage(),e);
+                log.error(e.getMessage(),e);
             }
         }else {
             throw new RuntimeException(msg);
@@ -463,19 +463,19 @@ public class ExcelHelper {
                                 Field idField = fkClz.getField("id");
                                 id = (PK)ReflectionUtil.getField(idField , fkObj);
                             } catch (NoSuchFieldException e) {
-                                logger.error(e.getMessage(),e);
+                                log.error(e.getMessage(),e);
                             }
                         }
 
                         ReflectionUtil.setField(f, m, id);
                     }else {
                         try {
-                            Field field = ReflectionUtil.getField(fkClz, Object.class ,StringFormatKit.toCamelCase(annotation.dbColumnName()) );
+                            Field field = ReflectionUtil.getField(fkClz, Object.class , StringFormatKit.toCamelCase(annotation.dbColumnName()) );
                             ReflectionUtil.makeAccessible(field);
                             Object temp = (PK)ReflectionUtil.getField(field , fkObj);
                             ReflectionUtil.setField(f, m, temp);
                         } catch (Exception e) {
-                            logger.error(e.getMessage(),e);
+                            log.error(e.getMessage(),e);
                         }
                     }
                 }
@@ -647,7 +647,7 @@ public class ExcelHelper {
                     try {
                         dictValField.set(m, val);
                     }catch(Exception e){
-                        logger.error(e.getMessage(),e);
+                        log.error(e.getMessage(),e);
                     }
                 }
 
@@ -708,7 +708,7 @@ public class ExcelHelper {
 
 
 
-            if (AppConfig.NO_ERROR_SAVE_DB) {
+            if (Global.getUserConfig().getExcelNoErrorSave()) {
                 for (QueryModel m : list) {
                     if (getErrorMethod != null) {
                         String errorMsg = (String) getErrorMethod.invoke(m);
@@ -742,7 +742,7 @@ public class ExcelHelper {
                             }
                         } catch (Exception e) {
                             isAllOK = false;
-                            logger.error(e.getMessage(), e);
+                            log.error(e.getMessage(), e);
                             if (setErrorMethod != null) {
                                 setErrorMethod.invoke(m, "未知错误");
                             } else {
@@ -797,7 +797,7 @@ public class ExcelHelper {
                         }
                     } catch (Exception e) {
                         isAllOK = false;
-                        logger.error(e.getMessage(), e);
+                        log.error(e.getMessage(), e);
                         if (setErrorMethod != null) {
                             setErrorMethod.invoke(m, "未知错误");
                         } else {
@@ -899,10 +899,10 @@ public class ExcelHelper {
             e.setCellIndex(cellIndex);
             throw e;
         }catch(RuntimeException e){
-            logger.error(e.getMessage() , e);
+            log.error(e.getMessage() , e);
             throw e;
         }catch(Exception e){
-            logger.error(e.getMessage() , e);
+            log.error(e.getMessage() , e);
             throw new RuntimeException("未知错误");
         }
     }

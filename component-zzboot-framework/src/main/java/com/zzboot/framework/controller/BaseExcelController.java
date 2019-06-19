@@ -3,31 +3,32 @@ package com.zzboot.framework.controller;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.zz.bms.core.db.entity.BaseEntity;
-import com.zz.bms.core.db.entity.ILoginUserEntity;
-import com.zz.bms.core.db.mybatis.query.Query;
-import com.zz.bms.core.enums.EnumErrorMsg;
-import com.zz.bms.core.ui.Pages;
-import com.zz.bms.core.vo.AjaxJson;
-import com.zz.bms.util.configs.AppConfig;
-import com.zz.bms.util.configs.annotaions.EntityAnnotation;
-import com.zz.bms.util.configs.annotaions.EntityAttrDictAnnotation;
-import com.zz.bms.util.configs.annotaions.EntityAttrFkAnnotation;
-import com.zz.bms.util.file.FileKit;
-import com.zz.bms.util.poi.enums.EnumExcelFileType;
-import com.zz.bms.util.poi.exceptions.ExcelAbsenceException;
-import com.zz.bms.util.poi.exceptions.ExcelFormatException;
-import com.zz.bms.util.poi.exceptions.ExcelTypeMatchingException;
-import com.zz.bms.util.poi.export.ExcelExport;
-import com.zz.bms.util.poi.export.excelype.BaseXlsExport;
-import com.zz.bms.util.poi.export.excelype.CsvXlsExport;
-import com.zz.bms.util.poi.export.filetype.CsvExport;
-import com.zz.bms.util.poi.export.filetype.HssfExport;
-import com.zz.bms.util.poi.export.filetype.SxssfExport;
-import com.zz.bms.util.poi.imports.ExcelImport;
-import com.zz.bms.util.poi.util.ColumnUtil;
-import com.zz.bms.util.poi.vo.Column;
-import com.zz.bms.util.web.PaginationContext;
+import com.zzboot.framework.core.db.entity.BaseEntity;
+import com.zzboot.framework.core.db.entity.ILoginUserEntity;
+import com.zzboot.framework.core.db.mybatis.query.Query;
+import com.zzboot.framework.core.enums.EnumErrorMsg;
+import com.zzboot.framework.core.ui.Pages;
+import com.zzboot.framework.core.vo.AjaxJson;
+import com.zzboot.util.config.Global;
+import com.zzboot.util.config.annotaions.EntityAnnotation;
+import com.zzboot.util.config.annotaions.EntityAttrDictAnnotation;
+import com.zzboot.util.config.annotaions.EntityAttrFkAnnotation;
+import com.zzboot.util.file.base.FileKit;
+import com.zzboot.util.poi.enums.EnumExcelFileType;
+import com.zzboot.util.poi.exceptions.ExcelAbsenceException;
+import com.zzboot.util.poi.exceptions.ExcelFormatException;
+import com.zzboot.util.poi.exceptions.ExcelTypeMatchingException;
+import com.zzboot.util.poi.export.ExcelExport;
+import com.zzboot.util.poi.export.excelype.BaseXlsExport;
+import com.zzboot.util.poi.export.excelype.CsvXlsExport;
+import com.zzboot.util.poi.export.filetype.CsvExport;
+import com.zzboot.util.poi.export.filetype.HssfExport;
+import com.zzboot.util.poi.export.filetype.SxssfExport;
+import com.zzboot.util.poi.imports.ExcelImport;
+import com.zzboot.util.poi.util.ColumnUtil;
+import com.zzboot.util.poi.vo.Column;
+import com.zzboot.util.web.PaginationContext;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,6 +52,7 @@ import java.util.Map;
  * 包括导出，导入 支持 Excel2003  Excel2007  CSV 格式
  * @author Administrator
  */
+@Slf4j
 public abstract class BaseExcelController<
         RwModel extends BaseEntity<PK>,
         QueryModel extends RwModel,
@@ -208,7 +210,7 @@ public abstract class BaseExcelController<
      */
     @Override
     public String[] getExcelHeaderInfo(){
-        if(AppConfig.EXCEL_EXPORT_HEADER) {
+        if(Global.getUserConfig().getExcelExportHeader()) {
             EntityAnnotation ea = this.getRwEntityClass().getAnnotation(EntityAnnotation.class);
             if (ea != null) {
                 return new String[]{ea.value()};
@@ -222,7 +224,7 @@ public abstract class BaseExcelController<
 
 
     protected int getHeaderCellLength(){
-        return AppConfig.HEADER_DEFAULT_CELLS;
+        return Global.getUserConfig().getExcelHeaderMaxCells();
     }
 
     /**
@@ -239,7 +241,7 @@ public abstract class BaseExcelController<
 
     @Override
     public boolean isAddNumberByExport(){
-        return AppConfig.EXCEL_ADD_NUMBER;
+        return Global.getUserConfig().getExcelAddNumber();
     }
 
 
@@ -292,7 +294,7 @@ public abstract class BaseExcelController<
         }catch(RuntimeException e){
             return new AjaxJson(false , e.getMessage());
         }catch(Exception e){
-            logger.error(e.getMessage() , e);
+            log.error(e.getMessage() , e);
             return new AjaxJson(false ,  "未知错误");
         }
 
@@ -454,12 +456,12 @@ public abstract class BaseExcelController<
 
     @Override
     public boolean isAddNumberByImport(){
-        return AppConfig.EXCEL_ADD_NUMBER;
+        return Global.getUserConfig().getExcelAddNumber();
     }
 
     @Override
     public int getExcelImportHeaderRowNum(){
-        if(AppConfig.EXCEL_EXPORT_HEADER) {
+        if(Global.getUserConfig().getExcelExportHeader()) {
             return 2;
         }else {
             return 1;
@@ -474,7 +476,7 @@ public abstract class BaseExcelController<
     @Override
     public List<List<Object[]>> readExcel(ExcelImport ei){
         List<List<Object[]>> result = null;
-        if(AppConfig.EXCEL_IMPORT_ALLSHEET){
+        if(Global.getUserConfig().getExcelImportAllSheet()){
             List<List<Object[]>> list = ei.readExcelAllSheet();
             result = list;
         }else {

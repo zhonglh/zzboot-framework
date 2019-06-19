@@ -11,7 +11,6 @@ import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.framework.core.exceptions.DbException;
 import com.zzboot.framework.core.vo.AjaxJson;
 import com.zzboot.util.base.java.GenericsHelper;
-import com.zzboot.util.config.AppConfig;
 import com.zzboot.util.config.Global;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -89,7 +88,8 @@ public abstract class BaseBusinessController<
         modelMap.put(Constant.CURR_PARENT_URL, prefix);
         ILoginUserEntity loginUserEntity = this.getSessionUser();
         if(loginUserEntity != null) {
-            modelMap.put(Constant.PAGINGSIZE, (this.getSessionUser().getPageLimit()==null?20:this.getSessionUser().getPageLimit()));
+
+            modelMap.put(Constant.PAGINGSIZE, (Global.getUserConfig().getPageLimit()==null?20:Global.getUserConfig().getPageLimit()));
         }else {
             modelMap.put(Constant.PAGINGSIZE, 20);
         }

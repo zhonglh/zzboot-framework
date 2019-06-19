@@ -21,6 +21,8 @@
 
   <modules>
     <module>component-zzboot-framework</module>
+    <module>project-zzboot-system</module>
+    <module>project-zzboot-netdisk</module>
   </modules>
 
   <properties>

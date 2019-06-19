@@ -84,6 +84,7 @@ public class ShiroConfig {
     public MyRealm userRealm(EhCacheManager cacheManager) {
         MyRealm realm = new MyRealm();
         realm.setCacheManager(cacheManager);
+        //realm.setAuthenticationCacheName("");
         return realm;
     }
 

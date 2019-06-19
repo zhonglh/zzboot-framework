@@ -28,7 +28,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @author zhonglh
  */
 @Configuration
-@EnableCaching
 @ConditionalOnClass(RedisOperations.class)
 @EnableConfigurationProperties(RedisProperties.class)
 public class RedisConfig extends CachingConfigurerSupport {
@@ -39,9 +38,9 @@ public class RedisConfig extends CachingConfigurerSupport {
 	@Bean(name = "redisTemplate")
 	@SuppressWarnings("unchecked")
 	@ConditionalOnMissingBean(name = "redisTemplate")
-	public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
 		//使用fastJson序列化
-		RedisTemplate<Object, Object> template = new RedisTemplate<>();
+		RedisTemplate<String, Object> template = new RedisTemplate<>();
 		FastJsonRedisSerializer fastJsonRedisSerializer = new FastJsonRedisSerializer(Object.class);
 		template.setValueSerializer(fastJsonRedisSerializer);
 		template.setHashValueSerializer(fastJsonRedisSerializer);

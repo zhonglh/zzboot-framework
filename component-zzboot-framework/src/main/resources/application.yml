@@ -72,11 +72,13 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: false
 
+
+
 thread:
   pool:
     keepAliveSeconds: 2000
-    maxPoolSize： 100
-    corePoolSize： 10
+    maxPoolSize: 100
+    corePoolSize: 10
 
 
 

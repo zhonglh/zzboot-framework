@@ -20,7 +20,6 @@
   <url>http://www.example.com</url>
 
   <modules>
-    <module>component-zzboot-config</module>
     <module>component-zzboot-framework</module>
   </modules>
 
@@ -162,12 +161,6 @@
 
     </dependency>
 
-
-    <dependency>
-      <groupId>com.zzboot.util</groupId>
-      <artifactId>zzboot-util</artifactId>
-      <version>${zzboot.util.version}</version>
-    </dependency>
 
 
     <dependency>

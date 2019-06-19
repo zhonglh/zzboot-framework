@@ -117,4 +117,5 @@ public class WebMvcConfig extends RequestMappingHandlerMapping
 		//初始化缓存HTTP标头过滤器
 		initCachingHttpHeadersFilter(servletContext, dispatcherTypes);
 	}
+
 }

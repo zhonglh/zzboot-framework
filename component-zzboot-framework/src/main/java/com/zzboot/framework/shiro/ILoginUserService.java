@@ -1,4 +1,4 @@
-package com.zzboot.framework.core;
+package com.zzboot.framework.shiro;
 
 import com.zzboot.framework.core.db.entity.ILoginPermitEntity;
 import com.zzboot.framework.core.db.entity.ILoginRoleEntity;
@@ -11,7 +11,7 @@ import java.util.List;
  * 用户信息接口
  * @author Administrator
  */
-public interface IUserService<PK extends Serializable> {
+public interface ILoginUserService<PK extends Serializable> {
 
     /**
      * 通过登录名获取用户信息

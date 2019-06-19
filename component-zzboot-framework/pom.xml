@@ -30,6 +30,15 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>com.zzboot.util</groupId>
+            <artifactId>zzboot-util-config</artifactId>
+            <version>${zzboot.util.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.zzboot.util</groupId>
             <artifactId>zzboot-util-base</artifactId>
@@ -44,6 +53,12 @@
         </dependency>
 
 
+
+        <dependency>
+            <groupId>com.zzboot.util</groupId>
+            <artifactId>zzboot-util-web</artifactId>
+            <version>${zzboot.util.version}</version>
+        </dependency>
 
     </dependencies>
 

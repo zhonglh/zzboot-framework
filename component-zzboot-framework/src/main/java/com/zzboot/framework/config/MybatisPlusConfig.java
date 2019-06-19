@@ -48,6 +48,7 @@ public class MybatisPlusConfig {
 	@Bean
 	public PaginationInterceptor paginationInterceptor() {
 		PaginationInterceptor interceptor = new PaginationInterceptor();
+        interceptor.setDialectType("mysql");
 		return interceptor;
 	}
 

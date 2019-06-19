@@ -78,6 +78,9 @@ public interface ILoginUserEntity<PK extends Serializable> {
     public String getSalt();
 
 
+
+    public String getLoginName();
+
     public String getLoginPassword();
 
     /**
@@ -98,11 +101,6 @@ public interface ILoginUserEntity<PK extends Serializable> {
      */
     public String getAvatarImage();
 
-    /**
-     * 每页显示记录数
-     * @return
-     */
-    public Integer getPageLimit() ;
 
 
 }

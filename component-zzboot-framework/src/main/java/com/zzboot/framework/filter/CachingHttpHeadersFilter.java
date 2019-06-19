@@ -19,12 +19,6 @@ public class CachingHttpHeadersFilter implements Filter {
 	private static final long LAST_MODIFIED = System.currentTimeMillis();
 
 
-
-	@Override
-	public void destroy() {
-		// Nothing to destroy
-	}
-
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 

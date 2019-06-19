@@ -6,6 +6,7 @@ import com.zzboot.framework.core.enums.EnumOnlineStatus;
 import com.zzboot.framework.manage.AsyncManager;
 import com.zzboot.framework.shiro.IOnlineUserService;
 import com.zzboot.util.spring.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.TimerTask;
  * 针对自定义的ShiroSession的DB操作
  * @author zhonglh
  */
+@Slf4j
 public class OnlineSessionDAO extends EnterpriseCacheSessionDAO {
 
     /**
@@ -53,11 +55,15 @@ public class OnlineSessionDAO extends EnterpriseCacheSessionDAO {
      */
     @Override
     protected Session doReadSession(Serializable sessionId) {
-        IOnlineUserEnitty onlineUserEnitty =  onlineUserService.selectOnlineById((String)sessionId);
-        if(onlineUserEnitty == null){
+        try {
+            IOnlineUserEnitty onlineUserEnitty = onlineUserService.selectOnlineById((String) sessionId);
+            if (onlineUserEnitty == null) {
+                return null;
+            } else {
+                return onlineSessionFactory.createSession(onlineUserEnitty);
+            }
+        }catch (Exception e){
             return null;
-        }else {
-            return onlineSessionFactory.createSession(onlineUserEnitty);
         }
     }
 
@@ -97,7 +103,11 @@ public class OnlineSessionDAO extends EnterpriseCacheSessionDAO {
         return new TimerTask() {
             @Override
             public void run() {
-                SpringUtil.getBean(IOnlineUserService.class).saveOnline(session);
+                try {
+                    SpringUtil.getBean(IOnlineUserService.class).saveOnline(session);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
 
             }
         };
@@ -108,11 +118,15 @@ public class OnlineSessionDAO extends EnterpriseCacheSessionDAO {
      */
     @Override
     protected void doDelete(Session session) {
-        OnlineSession onlineSession = (OnlineSession) session;
-        if (null == onlineSession) {
-            return;
+        try {
+            OnlineSession onlineSession = (OnlineSession) session;
+            if (null == onlineSession) {
+                return;
+            }
+            onlineSession.setOnlineStatus(EnumOnlineStatus.OFF_LINE);
+            onlineUserService.deleteSession((String) onlineSession.getId());
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
-        onlineSession.setOnlineStatus(EnumOnlineStatus.OFF_LINE);
-        onlineUserService.deleteSession((String)onlineSession.getId());
     }
 }

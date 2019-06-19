@@ -1,9 +1,12 @@
 
 server:
   port: 8080
+
   tomcat:
     uri-encoding: UTF-8
   servlet:
+    # 项目contextPath
+    context-path: /
     session:
       cookie:
         http-only: false

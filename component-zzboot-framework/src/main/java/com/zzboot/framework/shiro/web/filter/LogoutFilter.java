@@ -13,8 +13,6 @@ import javax.servlet.ServletResponse;
 
 /**
  * 退出过滤器
- *
- * @author ruoyi
  */
 @Slf4j
 public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter {

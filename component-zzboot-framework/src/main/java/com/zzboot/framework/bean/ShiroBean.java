@@ -80,7 +80,8 @@ public class ShiroBean {
     private String unauthorizedUrl;
 
 
-
+    @Value("${shiro.session.cacheName}")
+    private String cacheName;
 
 
     public int getExpireTime() {
@@ -161,5 +162,13 @@ public class ShiroBean {
 
     public void setUnauthorizedUrl(String unauthorizedUrl) {
         this.unauthorizedUrl = unauthorizedUrl;
+    }
+
+    public String getCacheName() {
+        return cacheName;
+    }
+
+    public void setCacheName(String cacheName) {
+        this.cacheName = cacheName;
     }
 }

@@ -38,14 +38,10 @@ import java.util.Map;
 
 /**
  * 权限配置加载
- *
- * @author ruoyi
  */
 @Configuration
 public class ShiroConfig {
 
-    @Value("shiro.session.cacheName")
-    private String sessionCacheName;
 
     @Autowired
     private ShiroBean shiroBean;
@@ -97,7 +93,7 @@ public class ShiroConfig {
     @Bean
     public OnlineSessionDAO sessionDAO() {
         OnlineSessionDAO sessionDAO =  new OnlineSessionDAO();
-        sessionDAO.setActiveSessionsCacheName(sessionCacheName);
+        sessionDAO.setActiveSessionsCacheName(shiroBean.getCacheName());
         return sessionDAO;
     }
 
@@ -208,26 +204,23 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 对静态资源设置匿名访问
         filterChainDefinitionMap.put("/favicon.ico**" , "anon");
-        filterChainDefinitionMap.put("/ruoyi.png**" , "anon");
         filterChainDefinitionMap.put("/css/**" , "anon");
         filterChainDefinitionMap.put("/docs/**" , "anon");
         filterChainDefinitionMap.put("/fonts/**" , "anon");
         filterChainDefinitionMap.put("/img/**" , "anon");
-        filterChainDefinitionMap.put("/ajax/**" , "anon");
         filterChainDefinitionMap.put("/js/**" , "anon");
-        filterChainDefinitionMap.put("/ruoyi/**" , "anon");
         filterChainDefinitionMap.put("/druid/**" , "anon");
         filterChainDefinitionMap.put("/captcha/captchaImage**" , "anon");
         // 退出 logout地址，shiro去清除session
         filterChainDefinitionMap.put("/logout" , "logout");
         // 不需要拦截的访问
         filterChainDefinitionMap.put("/login" , "anon,captchaValidate");
+        filterChainDefinitionMap.put("/test" , "anon");
 
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("onlineSession" , onlineSessionFilter());
         filters.put("syncOnlineSession" , syncOnlineSessionFilter());
         filters.put("captchaValidate" , captchaValidateFilter());
-        // 注销成功，则跳转到指定页面
         filters.put("logout" , logoutFilter());
         shiroFilterFactoryBean.setFilters(filters);
 

@@ -108,7 +108,8 @@ public class MainController extends BaseController {
 
             }
             if(vsFileUseBO != null) {
-                if (EnumFileEngine.FILESYSTEM.getVal().equals(vsFileUseBO.getFileEngine())) {
+                //EnumFileEngine.FILESYSTEM.getVal()
+                if ("1".equals(vsFileUseBO.getFileEngine())) {
                     userImageUrl = request.getContextPath() + vsFileUseBO.getAccessUrl() + vsFileUseBO.getId();
                 } else {
                     userImageUrl = vsFileUseBO.getAccessUrl();

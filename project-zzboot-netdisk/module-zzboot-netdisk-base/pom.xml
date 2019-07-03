@@ -3,21 +3,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>zzboot-framework</artifactId>
+        <artifactId>project-zzboot-netdisk</artifactId>
         <groupId>com.zzboot</groupId>
         <version>zzboot.1.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>project-zzboot-netdisk</artifactId>
-    <packaging>pom</packaging>
-    <name>project-zzboot-netdisk Maven Webapp</name>
+    <artifactId>module-zzboot-netdisk-base</artifactId>
+    <packaging>jar</packaging>
+    <name>module-zzboot-netdisk-base</name>
     <url>http://www.example.com</url>
-
-
-    <modules>
-        <module>module-zzboot-netdisk-base</module>
-    </modules>
 
 
     <properties>
@@ -31,8 +26,11 @@
 
     <dependencies>
 
-
-
+        <dependency>
+            <groupId>com.zzboot</groupId>
+            <artifactId>module-zzboot-system-base</artifactId>
+            <version>${zzboot.version}</version>
+        </dependency>
 
 
     </dependencies>

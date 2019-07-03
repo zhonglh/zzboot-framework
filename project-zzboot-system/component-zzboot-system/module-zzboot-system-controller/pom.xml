@@ -23,4 +23,22 @@
         <java.version>1.8</java.version>
     </properties>
 
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.zzboot</groupId>
+            <artifactId>component-zzboot-framework</artifactId>
+            <version>${zzboot.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.zzboot</groupId>
+            <artifactId>module-zzboot-system-base</artifactId>
+            <version>${zzboot.version}</version>
+        </dependency>
+
+    </dependencies>
+
 </project>

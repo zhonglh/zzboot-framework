@@ -74,7 +74,7 @@ public class ExcelHelper {
                     }
                 }
                 if(f == null){
-                    throw new RuntimeException("BO没有设置这个EntityAttrFkAnnotation: group"+fkAnnotation.group() + "dbColumnName:" + keyFieldName );
+                    return  null;
                 }
                 ReflectionUtil.makeAccessible(f);
                 Object obj = ReflectionUtil.getField(f , m);
@@ -307,21 +307,28 @@ public class ExcelHelper {
         }
         Map<String, Map<Field, List<Field>>> fkFieldMap = ColumnUtil.getFkMap(fs);
 
-        for(Column column : columns){
-            Field f = column.getField();
-            EntityAttrPageAnnotation pageAnnotation = f.getAnnotation(EntityAttrPageAnnotation.class);
-            EntityAttrDBAnnotation dbAnnotation = f.getAnnotation(EntityAttrDBAnnotation.class);
-            EntityAttrDictAnnotation dictAnnotation = f.getAnnotation(EntityAttrDictAnnotation.class);
-            EntityAttrFkAnnotation fkAnnotation = f.getAnnotation(EntityAttrFkAnnotation.class);
+        try {
+            for (Column column : columns) {
+                Field f = column.getField();
+                EntityAttrPageAnnotation pageAnnotation = f.getAnnotation(EntityAttrPageAnnotation.class);
+                EntityAttrDBAnnotation dbAnnotation = f.getAnnotation(EntityAttrDBAnnotation.class);
+                EntityAttrDictAnnotation dictAnnotation = f.getAnnotation(EntityAttrDictAnnotation.class);
+                EntityAttrFkAnnotation fkAnnotation = f.getAnnotation(EntityAttrFkAnnotation.class);
 
-            if(dictAnnotation != null){
-                conttroller.analysisDict(list,column,dictAnnotation,dictInfoMaps,dictFieldMap);
-            }else if(fkAnnotation != null){
-                conttroller.analysisFk(list,column,fkAnnotation,fkKeyInfoMaps,fkNameInfoMaps,fkErrorKeyInfoMaps,fkErrorNameInfoMaps,fkFieldMap);
-            }else {
-                conttroller.analysisOther(list,column);
+                if (dictAnnotation != null) {
+                    conttroller.analysisDict(list, column, dictAnnotation, dictInfoMaps, dictFieldMap);
+                } else if (fkAnnotation != null) {
+                    conttroller.analysisFk(list, column, fkAnnotation, fkKeyInfoMaps, fkNameInfoMaps, fkErrorKeyInfoMaps, fkErrorNameInfoMaps, fkFieldMap);
+                } else {
+                    conttroller.analysisOther(list, column);
+                }
             }
+        }catch (Exception e){
+            log.error(e.getMessage() , e);
         }
+
+        //调用自定义的分析方法
+        conttroller.customAnalysis(list , columns);
 
 
     }
@@ -337,7 +344,7 @@ public class ExcelHelper {
      * @param fkErrorKeyInfoMaps
      * @param fkErrorNameInfoMaps
      * @param fkFieldMap
-     * @param conttroller
+     * @param controller
      * @param <RwModel>
      * @param <QueryModel>
      * @param <PK>
@@ -351,14 +358,14 @@ public class ExcelHelper {
                     Map<Class, Map<String, Object>> fkErrorKeyInfoMaps,
                     Map<Class, Map<String, Object>> fkErrorNameInfoMaps,
                     Map<String, Map<Field, List<Field>>> fkFieldMap,
-                    IExcelConttroller conttroller) {
+                    IExcelConttroller controller) {
 
         Class fkClz = fkAnnotation.fkClass();
         if(fkClz == null){
             try{
                 fkClz = Class.forName(fkAnnotation.fkClassName());
             }catch(Exception e){
-                throw new RuntimeException(fkAnnotation.group()+"设置外键类型错误");
+                throw new RuntimeException(fkAnnotation.group()+" 设置外键类型错误");
             }
         }
 
@@ -368,15 +375,15 @@ public class ExcelHelper {
 
         EntityAnnotation entityAnnotation = (EntityAnnotation) fkClz.getAnnotation(EntityAnnotation.class);
         if(entityAnnotation == null){
-            throw new RuntimeException(fkClz.getName()+"类型缺少 EntityAnnotation 注解");
+            throw new RuntimeException(fkClz.getName()+" 类型缺少 EntityAnnotation 注解");
         }
         String[] businessKeys = entityAnnotation.businessKey();
         String businessName = entityAnnotation.businessName();
         if(businessKeys == null || businessKeys.length == 0 || StringUtils.isEmpty(businessKeys[0])){
-            throw new RuntimeException(fkClz.getName()+"EntityAnnotation 注解中没有 businessKey");
+            throw new RuntimeException(fkClz.getName()+" EntityAnnotation 注解中没有 businessKey");
         }
         if(businessName == null ||  StringUtils.isEmpty(businessName)){
-            throw new RuntimeException(fkClz.getName()+"EntityAnnotation 注解中没有 businessName");
+            throw new RuntimeException(fkClz.getName()+" EntityAnnotation 注解中没有 businessName");
         }
 
         String[] keyFieldNames = businessKeys[0].split(EnumSymbol.COMMA.getCode());
@@ -385,10 +392,10 @@ public class ExcelHelper {
 
         Map<Field, List<Field>> fkMap = fkFieldMap.get(fkAnnotation.group());
         if(fkMap == null){
-            throw new RuntimeException(fkAnnotation.group()+"外键设置错误");
+            throw new RuntimeException(fkAnnotation.group()+" 外键设置错误");
         }
 
-        Method setErrorMethod = ExcelUtil.setErrorMethod(conttroller.getRwEntityClass());
+        Method setErrorMethod = ExcelUtil.setErrorMethod(controller.getRwEntityClass());
 
 
         Field fkIdField = null;
@@ -410,8 +417,8 @@ public class ExcelHelper {
 
             boolean isAllNull = false;
             Object fkObj = null;
-            Object[] keyObjs = buildKeyObject(m , fkAnnotation,  keyFieldNames , conttroller);
-            if(!EntityUtil.isAllEmpty(keyObjs)) {
+            Object[] keyObjs = buildKeyObject(m , fkAnnotation,  keyFieldNames , controller);
+            if(keyObjs != null && !EntityUtil.isAllEmpty(keyObjs)) {
                 String key = buildKey(keyObjs);
                 if (key != null) {
                     fkObj = getFkObjByKey(m, fkAnnotation,
@@ -419,10 +426,10 @@ public class ExcelHelper {
                             iService, setErrorMethod, fkIdColumn,
                             fkKeyInfoMaps , fkErrorKeyInfoMaps);
                 } else {
-                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + "信息填写不全 ");
+                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + " 信息填写不全 ");
                 }
             }else {
-                Object[] nameObjs = buildKeyObject(m, fkAnnotation, nameFieldNames, conttroller);
+                Object[] nameObjs = buildKeyObject(m, fkAnnotation, nameFieldNames, controller);
                 if(!EntityUtil.isAllEmpty(nameObjs)) {
                     String key = buildKey(nameObjs);
                     if (key != null) {
@@ -431,7 +438,7 @@ public class ExcelHelper {
                                 iService, setErrorMethod, fkIdColumn,
                                 fkNameInfoMaps , fkErrorNameInfoMaps);
                     }else {
-                        ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + "信息填写不全 ");
+                        ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + " 信息填写不全 ");
                     }
                 }else {
                     isAllNull = true;
@@ -443,9 +450,22 @@ public class ExcelHelper {
 
             if(fkObj == null && isAllNull){
                 if(fkIdColumn.isRequired()) {
-                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + "信息必须输入 ");
+                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + " 信息必须输入 ");
                 }
                 continue;
+            }
+
+
+            if(fkObj != null){
+                try{
+                    controller.checkEntity((BaseEntity) fkObj);
+                }catch (BizException e){
+                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + e.getMsg());
+                    continue;
+                }catch (Exception e){
+                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + e.getMessage());
+                    continue;
+                }
             }
 
             if(fkObj != null){
@@ -513,7 +533,7 @@ public class ExcelHelper {
         Object fkObj = fkClzMap.get(key);
         if(fkObj == null){
             if(fkErrorClzMap.containsKey(key)){
-                ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + "信息填写错误 ");
+                ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + " 信息填写错误 ");
                 return null;
             }
         }
@@ -530,7 +550,7 @@ public class ExcelHelper {
                 fkClzMap.put(key , fkObj);
             }else {
                 fkErrorClzMap.put(key , fkObj);
-                ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + "信息填写错误 ");
+                ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + " 信息填写错误 ");
             }
         }
 
@@ -585,8 +605,8 @@ public class ExcelHelper {
                 if (fkObj != null) {
                     fkClzMap.put(key, fkObj);
                 } else {
-                    fkErrorClzMap.put(key, fkIdColumn.getName() + "信息填写错误 ");
-                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + "信息填写错误 ");
+                    fkErrorClzMap.put(key, fkIdColumn.getName() + " 信息填写错误 ");
+                    ExcelHelper.errorProcess(setErrorMethod, m, fkIdColumn.getName() + " 信息填写错误 ");
                 }
             }else {
                 fkErrorClzMap.put(key, fkIdColumn.getName() + " 内容重复 ");
@@ -674,6 +694,12 @@ public class ExcelHelper {
         ReflectionUtil.makeAccessible(column.getField());
         for(QueryModel m : list){
             Object obj = ReflectionUtil.getField(column.getField(),m);
+            if(obj != null && obj instanceof String){
+                if(obj.toString().endsWith(".0")){
+                    obj = obj.toString().substring(0, obj.toString().length() -2);
+                    ReflectionUtil.setField(column.getField() , m  , obj );
+                }
+            }
             ExcelHelper.checkField(column, setErrorMethod, m, obj);
 
         }
@@ -744,7 +770,7 @@ public class ExcelHelper {
                             isAllOK = false;
                             log.error(e.getMessage(), e);
                             if (setErrorMethod != null) {
-                                setErrorMethod.invoke(m, "未知错误");
+                                setErrorMethod.invoke(m, " 未知错误");
                             } else {
                                 throw new RuntimeException(e);
                             }
@@ -763,7 +789,7 @@ public class ExcelHelper {
                     try {
                         conntroller.getBaseRwService().saveBatch(ims);
                     } catch (Exception e) {
-                        throw new RuntimeException("数据错误，请重试！");
+                        throw new RuntimeException(" 数据错误，请重试！");
                     }
                 }
 

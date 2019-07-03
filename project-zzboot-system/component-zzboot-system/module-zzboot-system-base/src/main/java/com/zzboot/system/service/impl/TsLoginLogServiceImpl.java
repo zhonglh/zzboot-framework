@@ -2,7 +2,7 @@ package com.zzboot.system.service.impl;
 
 import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDepBO;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsLoginLogBO;
@@ -54,7 +54,7 @@ public class TsLoginLogServiceImpl extends SystemBaseServiceImpl<TsLoginLogBO,St
 
 		try {
 			if(StringUtils.isEmpty(tsLoginLogBO.getOperationTypeName()) && StringUtils.isNotEmpty(tsLoginLogBO.getOperationType()) ) {
-				String dictName = tsDictService.getDictName(tsLoginLogBO.getOperationType(),EnumDictType.OPERATION_TYPE.getVal());
+				String dictName = tsDictService.getDictName(tsLoginLogBO.getOperationType(), EnumSystemDictType.OPERATION_TYPE.getVal());
 				tsLoginLogBO.setOperationTypeName(dictName);
 			}
 		}catch(Exception e){
@@ -110,12 +110,12 @@ public class TsLoginLogServiceImpl extends SystemBaseServiceImpl<TsLoginLogBO,St
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.OPERATION_TYPE.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.OPERATION_TYPE.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsLoginLogBOs.forEach(tsLoginLogBO -> {
 			if(StringUtils.isEmpty(tsLoginLogBO.getOperationTypeName()) && StringUtils.isNotEmpty(tsLoginLogBO.getOperationType()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.OPERATION_TYPE.getVal() + tsLoginLogBO.getOperationType());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.OPERATION_TYPE.getVal() + tsLoginLogBO.getOperationType());
 				if(dict != null) {
 					tsLoginLogBO.setOperationTypeName(dict.getDictName());
 				}

@@ -1,7 +1,7 @@
 package com.zzboot.system.service.impl;
 
 import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.VsUserMenuBO;
 import com.zzboot.system.dao.VsUserDAO;
@@ -53,7 +53,7 @@ public class VsUserMenuServiceImpl extends SystemBaseServiceImpl<VsUserMenuBO,St
 
 		try {
 			if(StringUtils.isEmpty(vsUserMenuBO.getShortcutName()) && StringUtils.isNotEmpty(vsUserMenuBO.getShortcut()) ) {
-				String dictName = tsDictService.getDictName(vsUserMenuBO.getShortcut(),EnumDictType.SHORTCUT.getVal());
+				String dictName = tsDictService.getDictName(vsUserMenuBO.getShortcut(), EnumSystemDictType.SHORTCUT.getVal());
 				vsUserMenuBO.setShortcutName(dictName);
 			}
 		}catch(Exception e){
@@ -96,13 +96,13 @@ public class VsUserMenuServiceImpl extends SystemBaseServiceImpl<VsUserMenuBO,St
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.SHORTCUT.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.SHORTCUT.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		vsUserMenuBOs.forEach(vsUserMenuBO -> {
 
 			if(StringUtils.isEmpty(vsUserMenuBO.getShortcutName()) && StringUtils.isNotEmpty(vsUserMenuBO.getShortcut()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.SHORTCUT.getVal() + vsUserMenuBO.getShortcut());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.SHORTCUT.getVal() + vsUserMenuBO.getShortcut());
 				if(dict != null) {
 					vsUserMenuBO.setShortcutName(dict.getDictName());
 				}

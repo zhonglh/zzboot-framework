@@ -4,7 +4,7 @@ import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
 import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.framework.core.exceptions.BizException;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDepBO;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsMsgTempletBO;
@@ -63,7 +63,7 @@ public class TsMsgTempletServiceImpl extends SystemBaseServiceImpl<TsMsgTempletB
 		}
 		try {
 			if(StringUtils.isEmpty(tsMsgTempletBO.getTempletEffectiveName()) && StringUtils.isNotEmpty(tsMsgTempletBO.getTempletEffective()) ) {
-				String dictName = tsDictService.getDictName(tsMsgTempletBO.getTempletEffective(),EnumDictType.YES_NO.getVal());
+				String dictName = tsDictService.getDictName(tsMsgTempletBO.getTempletEffective(), EnumSystemDictType.YES_NO.getVal());
 				tsMsgTempletBO.setTempletEffectiveName(dictName);
 			}
 		}catch(Exception e){
@@ -71,7 +71,7 @@ public class TsMsgTempletServiceImpl extends SystemBaseServiceImpl<TsMsgTempletB
 		}
 		try {
 			if(StringUtils.isEmpty(tsMsgTempletBO.getMsgLanguageName()) && StringUtils.isNotEmpty(tsMsgTempletBO.getMsgLanguage()) ) {
-				String dictName = tsDictService.getDictName(tsMsgTempletBO.getMsgLanguage(),EnumDictType.MSG_LANGUAGE.getVal());
+				String dictName = tsDictService.getDictName(tsMsgTempletBO.getMsgLanguage(), EnumSystemDictType.MSG_LANGUAGE.getVal());
 				tsMsgTempletBO.setMsgLanguageName(dictName);
 			}
 		}catch(Exception e){
@@ -79,7 +79,7 @@ public class TsMsgTempletServiceImpl extends SystemBaseServiceImpl<TsMsgTempletB
 		}
 		try {
 			if(StringUtils.isEmpty(tsMsgTempletBO.getMsgTempletTypeName()) && StringUtils.isNotEmpty(tsMsgTempletBO.getMsgTempletType()) ) {
-				String dictName = tsDictService.getDictName(tsMsgTempletBO.getMsgTempletType(),EnumDictType.MSG_TEMPLET_TYPE.getVal());
+				String dictName = tsDictService.getDictName(tsMsgTempletBO.getMsgTempletType(), EnumSystemDictType.MSG_TEMPLET_TYPE.getVal());
 				tsMsgTempletBO.setMsgTempletTypeName(dictName);
 			}
 		}catch(Exception e){
@@ -128,24 +128,24 @@ public class TsMsgTempletServiceImpl extends SystemBaseServiceImpl<TsMsgTempletB
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.YES_NO.getVal(),EnumDictType.MSG_LANGUAGE.getVal(),EnumDictType.MSG_TEMPLET_TYPE.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.YES_NO.getVal(), EnumSystemDictType.MSG_LANGUAGE.getVal(), EnumSystemDictType.MSG_TEMPLET_TYPE.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsMsgTempletBOs.forEach(tsMsgTempletBO -> {
 			if(StringUtils.isEmpty(tsMsgTempletBO.getTempletEffectiveName()) && StringUtils.isNotEmpty(tsMsgTempletBO.getTempletEffective()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.YES_NO.getVal() + tsMsgTempletBO.getTempletEffective());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.YES_NO.getVal() + tsMsgTempletBO.getTempletEffective());
 				if(dict != null) {
 					tsMsgTempletBO.setTempletEffectiveName(dict.getDictName());
 				}
 			}
 			if(StringUtils.isEmpty(tsMsgTempletBO.getMsgLanguageName()) && StringUtils.isNotEmpty(tsMsgTempletBO.getMsgLanguage()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.MSG_LANGUAGE.getVal() + tsMsgTempletBO.getMsgLanguage());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.MSG_LANGUAGE.getVal() + tsMsgTempletBO.getMsgLanguage());
 				if(dict != null) {
 					tsMsgTempletBO.setMsgLanguageName(dict.getDictName());
 				}
 			}
 			if(StringUtils.isEmpty(tsMsgTempletBO.getMsgTempletTypeName()) && StringUtils.isNotEmpty(tsMsgTempletBO.getMsgTempletType()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.MSG_TEMPLET_TYPE.getVal() + tsMsgTempletBO.getMsgTempletType());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.MSG_TEMPLET_TYPE.getVal() + tsMsgTempletBO.getMsgTempletType());
 				if(dict != null) {
 					tsMsgTempletBO.setMsgTempletTypeName(dict.getDictName());
 				}

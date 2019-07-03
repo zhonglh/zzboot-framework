@@ -1,7 +1,7 @@
 package com.zzboot.system.service.impl;
 
 import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsFileBO;
 import com.zzboot.system.dao.TsFileDAO;
@@ -48,7 +48,7 @@ public class TsFileServiceImpl extends SystemBaseServiceImpl<TsFileBO,String> im
 
 		try {
 			if(StringUtils.isEmpty(tsFileBO.getFileEngineName()) && StringUtils.isNotEmpty(tsFileBO.getFileEngine()) ) {
-				String dictName = tsDictService.getDictName(tsFileBO.getFileEngine(),EnumDictType.FILE_ENGINE.getVal());
+				String dictName = tsDictService.getDictName(tsFileBO.getFileEngine(), EnumSystemDictType.FILE_ENGINE.getVal());
 				tsFileBO.setFileEngineName(dictName);
 			}
 		}catch(Exception e){
@@ -70,12 +70,12 @@ public class TsFileServiceImpl extends SystemBaseServiceImpl<TsFileBO,String> im
 		}
 
 
-		String[] dictTypes = new String[]{EnumDictType.FILE_ENGINE.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.FILE_ENGINE.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsFileBOs.forEach(tsFileBO -> {
 			if(StringUtils.isEmpty(tsFileBO.getFileEngineName()) && StringUtils.isNotEmpty(tsFileBO.getFileEngine()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.FILE_ENGINE.getVal() + tsFileBO.getFileEngine());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.FILE_ENGINE.getVal() + tsFileBO.getFileEngine());
 				if(dict != null) {
 					tsFileBO.setFileEngineName(dict.getDictName());
 				}

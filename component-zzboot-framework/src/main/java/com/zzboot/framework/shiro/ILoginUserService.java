@@ -35,4 +35,10 @@ public interface ILoginUserService<PK extends Serializable> {
      */
     public List<ILoginPermitEntity> getUserPermitInfo(ILoginUserEntity loginUserEntity) ;
 
+    /**
+     * 在登陆时检查用户的状态
+     * @param loginUserEntity
+     */
+    public void checkUserStatus(ILoginUserEntity loginUserEntity) ;
+
 }

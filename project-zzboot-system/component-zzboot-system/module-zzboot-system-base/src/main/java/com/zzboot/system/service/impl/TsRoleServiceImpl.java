@@ -4,7 +4,7 @@ import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
 import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.framework.core.exceptions.BizException;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDepBO;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsRoleBO;
@@ -63,7 +63,7 @@ public class TsRoleServiceImpl extends SystemBaseServiceImpl<TsRoleBO,String> im
 		}
 		try {
 			if(StringUtils.isEmpty(tsRoleBO.getRoleStatusName()) && StringUtils.isNotEmpty(tsRoleBO.getRoleStatus()) ) {
-				String dictName = tsDictService.getDictName(tsRoleBO.getRoleStatus(),EnumDictType.ROLE_STATUS.getVal());
+				String dictName = tsDictService.getDictName(tsRoleBO.getRoleStatus(), EnumSystemDictType.ROLE_STATUS.getVal());
 				tsRoleBO.setRoleStatusName(dictName);
 			}
 		}catch(Exception e){
@@ -71,7 +71,7 @@ public class TsRoleServiceImpl extends SystemBaseServiceImpl<TsRoleBO,String> im
 		}
 		try {
 			if(StringUtils.isEmpty(tsRoleBO.getRoleTypeName()) && StringUtils.isNotEmpty(tsRoleBO.getRoleType()) ) {
-				String dictName = tsDictService.getDictName(tsRoleBO.getRoleType(),EnumDictType.ROLE_TYPE.getVal());
+				String dictName = tsDictService.getDictName(tsRoleBO.getRoleType(), EnumSystemDictType.ROLE_TYPE.getVal());
 				tsRoleBO.setRoleTypeName(dictName);
 			}
 		}catch(Exception e){
@@ -120,18 +120,18 @@ public class TsRoleServiceImpl extends SystemBaseServiceImpl<TsRoleBO,String> im
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.ROLE_STATUS.getVal(),EnumDictType.ROLE_TYPE.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.ROLE_STATUS.getVal(), EnumSystemDictType.ROLE_TYPE.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsRoleBOs.forEach(tsRoleBO -> {
 			if(StringUtils.isEmpty(tsRoleBO.getRoleStatusName()) && StringUtils.isNotEmpty(tsRoleBO.getRoleStatus()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.ROLE_STATUS.getVal() + tsRoleBO.getRoleStatus());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.ROLE_STATUS.getVal() + tsRoleBO.getRoleStatus());
 				if(dict != null) {
 					tsRoleBO.setRoleStatusName(dict.getDictName());
 				}
 			}
 			if(StringUtils.isEmpty(tsRoleBO.getRoleTypeName()) && StringUtils.isNotEmpty(tsRoleBO.getRoleType()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.ROLE_TYPE.getVal() + tsRoleBO.getRoleType());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.ROLE_TYPE.getVal() + tsRoleBO.getRoleType());
 				if(dict != null) {
 					tsRoleBO.setRoleTypeName(dict.getDictName());
 				}

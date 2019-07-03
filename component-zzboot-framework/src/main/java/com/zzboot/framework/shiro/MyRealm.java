@@ -3,7 +3,6 @@ package com.zzboot.framework.shiro;
 import com.zzboot.framework.core.db.entity.ILoginPermitEntity;
 import com.zzboot.framework.core.db.entity.ILoginRoleEntity;
 import com.zzboot.framework.core.db.entity.ILoginUserEntity;
-import com.zzboot.framework.enums.EnumUserStatus;
 import com.zzboot.framework.shiro.utils.ShiroUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -90,9 +89,10 @@ public class MyRealm extends AuthorizingRealm {
         if(user == null){
             throw new AuthenticationException("帐号密码错误");
         }
-        if(EnumUserStatus.forbidden.getVal().equals(user.getUserStatus())){
-            throw new LockedAccountException("帐号被禁用,请联系管理员!");
-        }
+
+        //检查账户的合法性
+        userService.checkUserStatus(user);
+
 
         String pw = new String ( ((UsernamePasswordToken)token).getPassword());
         System.out.println(ShiroUtils.encodeSalt(pw , user.getSalt()  ));

@@ -4,7 +4,7 @@ import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
 import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.framework.core.exceptions.BizException;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDepBO;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsUserBO;
@@ -70,7 +70,7 @@ public class TsDepServiceImpl extends SystemBaseServiceImpl<TsDepBO,String> impl
 		}
 		try {
 			if(StringUtils.isEmpty(tsDepBO.getDepStatusName()) && StringUtils.isNotEmpty(tsDepBO.getDepStatus()) ) {
-				String dictName = tsDictService.getDictName(tsDepBO.getDepStatus(), EnumDictType.DEP_STATUS.getVal());
+				String dictName = tsDictService.getDictName(tsDepBO.getDepStatus(), EnumSystemDictType.DEP_STATUS.getVal());
 				tsDepBO.setDepStatusName(dictName);
 			}
 		}catch(Exception e){
@@ -135,12 +135,12 @@ public class TsDepServiceImpl extends SystemBaseServiceImpl<TsDepBO,String> impl
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.DEP_STATUS.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.DEP_STATUS.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsDepBOs.forEach(tsDepBO -> {
 			if(StringUtils.isEmpty(tsDepBO.getDepStatusName()) && StringUtils.isNotEmpty(tsDepBO.getDepStatus()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.DEP_STATUS.getVal() + tsDepBO.getDepStatus());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.DEP_STATUS.getVal() + tsDepBO.getDepStatus());
 				if(dict != null) {
 					tsDepBO.setDepStatusName(dict.getDictName());
 				}

@@ -2,7 +2,7 @@ package com.zzboot.system.service.impl;
 
 import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsMenuBO;
 import com.zzboot.system.dao.TsMenuDAO;
@@ -81,7 +81,7 @@ public class TsMenuServiceImpl extends SystemBaseServiceImpl<TsMenuBO,String> im
 
 		try {
 			if(StringUtils.isEmpty(tsMenuBO.getLeafName()) && StringUtils.isNotEmpty(tsMenuBO.getLeaf()) ) {
-				String dictName = tsDictService.getDictName(tsMenuBO.getLeaf(),EnumDictType.YES_NO.getVal());
+				String dictName = tsDictService.getDictName(tsMenuBO.getLeaf(), EnumSystemDictType.YES_NO.getVal());
 				tsMenuBO.setLeafName(dictName);
 			}
 		}catch(Exception e){
@@ -96,7 +96,7 @@ public class TsMenuServiceImpl extends SystemBaseServiceImpl<TsMenuBO,String> im
 		}
 		try {
 			if(StringUtils.isEmpty(tsMenuBO.getHiddenName()) && StringUtils.isNotEmpty(tsMenuBO.getHidden()) ) {
-				String dictName = tsDictService.getDictName(tsMenuBO.getHidden(),EnumDictType.YES_NO.getVal());
+				String dictName = tsDictService.getDictName(tsMenuBO.getHidden(), EnumSystemDictType.YES_NO.getVal());
 				tsMenuBO.setHiddenName(dictName);
 			}
 		}catch(Exception e){
@@ -104,7 +104,7 @@ public class TsMenuServiceImpl extends SystemBaseServiceImpl<TsMenuBO,String> im
 		}
 		try {
 			if(StringUtils.isEmpty(tsMenuBO.getShortcutName()) && StringUtils.isNotEmpty(tsMenuBO.getShortcut()) ) {
-				String dictName = tsDictService.getDictName(tsMenuBO.getShortcut(),EnumDictType.YES_NO.getVal());
+				String dictName = tsDictService.getDictName(tsMenuBO.getShortcut(), EnumSystemDictType.YES_NO.getVal());
 				tsMenuBO.setShortcutName(dictName);
 			}
 		}catch(Exception e){
@@ -153,24 +153,24 @@ public class TsMenuServiceImpl extends SystemBaseServiceImpl<TsMenuBO,String> im
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.YES_NO.getVal(),EnumDictType.YES_NO.getVal(),EnumDictType.YES_NO.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.YES_NO.getVal(), EnumSystemDictType.YES_NO.getVal(), EnumSystemDictType.YES_NO.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsMenuBOs.forEach(tsMenuBO -> {
 			if(StringUtils.isEmpty(tsMenuBO.getLeafName()) && StringUtils.isNotEmpty(tsMenuBO.getLeaf()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.YES_NO.getVal() + tsMenuBO.getLeaf());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.YES_NO.getVal() + tsMenuBO.getLeaf());
 				if(dict != null) {
 					tsMenuBO.setLeafName(dict.getDictName());
 				}
 			}
 			if(StringUtils.isEmpty(tsMenuBO.getHiddenName()) && StringUtils.isNotEmpty(tsMenuBO.getHidden()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.YES_NO.getVal() + tsMenuBO.getHidden());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.YES_NO.getVal() + tsMenuBO.getHidden());
 				if(dict != null) {
 					tsMenuBO.setHiddenName(dict.getDictName());
 				}
 			}
 			if(StringUtils.isEmpty(tsMenuBO.getShortcutName()) && StringUtils.isNotEmpty(tsMenuBO.getShortcut()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.YES_NO.getVal() + tsMenuBO.getShortcut());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.YES_NO.getVal() + tsMenuBO.getShortcut());
 				if(dict != null) {
 					tsMenuBO.setShortcutName(dict.getDictName());
 				}

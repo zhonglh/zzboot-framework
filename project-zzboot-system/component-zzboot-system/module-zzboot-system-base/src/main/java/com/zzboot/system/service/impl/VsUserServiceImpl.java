@@ -1,7 +1,7 @@
 package com.zzboot.system.service.impl;
 
 import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.VsUserBO;
 import com.zzboot.system.dao.VsUserDAO;
@@ -48,7 +48,7 @@ public class VsUserServiceImpl extends SystemBaseServiceImpl<VsUserBO,String> im
 
         try {
             if(StringUtils.isEmpty(vsUserBO.getUserStatusName()) && StringUtils.isNotEmpty(vsUserBO.getUserStatus()) ) {
-                String dictName = tsDictService.getDictName(vsUserBO.getUserStatus(),EnumDictType.USER_STATUS.getVal());
+                String dictName = tsDictService.getDictName(vsUserBO.getUserStatus(), EnumSystemDictType.USER_STATUS.getVal());
                 vsUserBO.setUserStatusName(dictName);
             }
         }catch(Exception e){
@@ -56,7 +56,7 @@ public class VsUserServiceImpl extends SystemBaseServiceImpl<VsUserBO,String> im
         }
         try {
             if(StringUtils.isEmpty(vsUserBO.getSystemAdminName()) && StringUtils.isNotEmpty(vsUserBO.getSystemAdmin()) ) {
-                String dictName = tsDictService.getDictName(vsUserBO.getSystemAdmin(),EnumDictType.YES_NO.getVal());
+                String dictName = tsDictService.getDictName(vsUserBO.getSystemAdmin(), EnumSystemDictType.YES_NO.getVal());
                 vsUserBO.setSystemAdminName(dictName);
             }
         }catch(Exception e){
@@ -90,18 +90,18 @@ public class VsUserServiceImpl extends SystemBaseServiceImpl<VsUserBO,String> im
         }
 
 
-        String[] dictTypes = new String[]{EnumDictType.USER_STATUS.getVal(),EnumDictType.YES_NO.getVal()};
+        String[] dictTypes = new String[]{EnumSystemDictType.USER_STATUS.getVal(), EnumSystemDictType.YES_NO.getVal()};
         Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
         vsUserBOs.forEach(vsUserBO -> {
             if(StringUtils.isEmpty(vsUserBO.getUserStatusName()) && StringUtils.isNotEmpty(vsUserBO.getUserStatus()) ) {
-                TsDictBO dict = dictMap.get(EnumDictType.USER_STATUS.getVal() + vsUserBO.getUserStatus());
+                TsDictBO dict = dictMap.get(EnumSystemDictType.USER_STATUS.getVal() + vsUserBO.getUserStatus());
                 if(dict != null) {
                     vsUserBO.setUserStatusName(dict.getDictName());
                 }
             }
             if(StringUtils.isEmpty(vsUserBO.getSystemAdminName()) && StringUtils.isNotEmpty(vsUserBO.getSystemAdmin()) ) {
-                TsDictBO dict = dictMap.get(EnumDictType.YES_NO.getVal() + vsUserBO.getSystemAdmin());
+                TsDictBO dict = dictMap.get(EnumSystemDictType.YES_NO.getVal() + vsUserBO.getSystemAdmin());
                 if(dict != null) {
                     vsUserBO.setSystemAdminName(dict.getDictName());
                 }

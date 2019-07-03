@@ -88,13 +88,12 @@ public abstract class BaseBusinessController<
         modelMap.put(Constant.CURR_PARENT_URL, prefix);
         ILoginUserEntity loginUserEntity = this.getSessionUser();
         if(loginUserEntity != null) {
-
             modelMap.put(Constant.PAGINGSIZE, (Global.getUserConfig().getPageLimit()==null?20:Global.getUserConfig().getPageLimit()));
         }else {
             modelMap.put(Constant.PAGINGSIZE, 20);
         }
 
-        if(Global.getAppConfig().useCrumb()) {
+        if(Global.getAppConfig().getUseCrumb()) {
             String breadcrumb = "";
             breadcrumb = computeBreadcrumb();
             modelMap.put(Constant.BREADCRUMB, breadcrumb);
@@ -158,6 +157,15 @@ public abstract class BaseBusinessController<
 
     }
 
+    /**
+     * 插入错误时 ， 回收资源
+     * @param m
+     * @param sessionUser
+     */
+    protected void recoveryResources(RwModel m , ILoginUserEntity<PK> sessionUser){
+
+    }
+
 
 
 
@@ -183,7 +191,7 @@ public abstract class BaseBusinessController<
     }
 
     /**
-     * 设置一些旧的值
+     * 设置一些旧的值 , 或者比对新值和旧值是否有逻辑问题
      * @param newVal
      * @param oldVal
      */
@@ -265,6 +273,7 @@ public abstract class BaseBusinessController<
         //如果有问题，直接 throw BizException
         //比如已经归档 ，或者正在审批， 不能删除
         //比如上级或者其它数据已经锁定， 不能删除
+
     }
 
 
@@ -366,6 +375,16 @@ public abstract class BaseBusinessController<
     protected void customInfoByViewForm(RwModel m, ModelMap model) {
     }
 
+
+    /**
+     * 自定义初始化值
+     * @param m
+     * @param model
+     */
+    protected void customInit(RwModel m, ModelMap model) {
+
+    }
+
     /**
      * 增加界面一些定制的操作
      * 如有， 需要重载
@@ -377,12 +396,21 @@ public abstract class BaseBusinessController<
 
 
     /**
+     * 根据查询条件获取第一个对象
+     * @param rwQuery
+     * @return
+     */
+    protected RwModel getModelByQuery(RwQuery rwQuery){
+        return this.baseRwService.getOne((QueryWrapper<RwModel>)rwQuery.buildWrapper());
+    }
+
+    /**
      * 所有界面一些定制的操作
      * 如有， 需要重载
      * @param model
      */
-    protected void customInfoByAllPage(RwModel m, ModelMap model) {
-
+    protected RwModel customInfoByAllPage(RwModel m, ModelMap model) {
+        return m;
     }
 
     /**

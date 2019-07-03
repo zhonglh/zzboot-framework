@@ -11,6 +11,7 @@ import com.zzboot.framework.core.db.mybatis.query.Query;
 import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.framework.core.enums.EnumSymbol;
 import com.zzboot.framework.core.enums.EnumTreeState;
+import com.zzboot.framework.core.exceptions.BizException;
 import com.zzboot.framework.core.exceptions.DbException;
 import com.zzboot.framework.core.ui.Pages;
 import com.zzboot.framework.core.ui.TreeModel;
@@ -77,24 +78,35 @@ public abstract class   BaseGroupCURDController<
     @RequestMapping(value = "/toList" , method = RequestMethod.GET )
     public String toList(QueryModel m, ModelMap modelMap , HttpServletRequest request, HttpServletResponse response) {
 
-        this.assertHasViewPermission();
+        try {
+            this.assertHasViewPermission();
 
-        modelMap.put("entity" ,m);
+            modelMap.put("entity", m);
 
-        if (listAlsoSetCommonData) {
-            setCommonData(m,modelMap);
+            if (listAlsoSetCommonData) {
+                setCommonData(m, modelMap);
+            }
+
+
+            processQueryString(modelMap, request);
+
+            processPath(modelMap);
+
+            String pageName = this.getListPageName();
+            if (StringUtils.isEmpty(pageName)) {
+                pageName = defaultListPageName;
+            }
+            return viewName(pageName);
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-
-
-        processQueryString(modelMap, request);
-        
-        processPath(modelMap);
-
-        String pageName = this.getListPageName();
-        if(StringUtils.isEmpty(pageName)){
-            pageName = defaultListPageName;
-        }
-        return viewName(pageName);
     }
 
 
@@ -102,33 +114,44 @@ public abstract class   BaseGroupCURDController<
     @ResponseBody
     public Object list(QueryModel m , OnlyQuery query, Pages<QueryModel> pages , Model modelMap , HttpServletRequest request, HttpServletResponse response) {
 
-        this.assertHasViewPermission();
+        try {
+            this.assertHasViewPermission();
 
 
-        if(pages.getPageNum() == 0) {
-            pages.setPageNum(PaginationContext.getPageNum());
+            if (pages.getPageNum() == 0) {
+                pages.setPageNum(PaginationContext.getPageNum());
+            }
+
+            if (pages.getPageSize() == 0) {
+                pages.setPageSize(PaginationContext.getPageSize());
+            }
+
+            processPages(pages, request);
+
+            Page<QueryModel> page = new Page<QueryModel>(pages.getPageNum(), pages.getPageSize());
+
+
+            ILoginUserEntity<PK> sessionUserVO = getSessionUser();
+
+            processOnlyQuery(query, m, sessionUserVO);
+
+            Wrapper wrapper = buildQueryWrapper(query, m);
+
+            page = (Page<QueryModel>) baseQueryService.page(page, wrapper);
+
+            processResult(page.getRecords());
+
+            return toList(page);
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-
-        if(pages.getPageSize() == 0) {
-            pages.setPageSize(PaginationContext.getPageSize());
-        }
-
-        processPages(pages , request);
-
-        Page<QueryModel> page = new Page<QueryModel>(pages.getPageNum(), pages.getPageSize());
-
-
-        ILoginUserEntity<PK> sessionUserVO = getSessionUser();
-
-        processOnlyQuery(query , m , sessionUserVO);
-
-        Wrapper wrapper = buildQueryWrapper(query , m);
-
-        page = (Page<QueryModel>)baseQueryService.page(page , wrapper );
-
-        processResult(page.getRecords());
-
-        return toList(page);
 
     }
 
@@ -139,24 +162,35 @@ public abstract class   BaseGroupCURDController<
     @RequestMapping(value = "/toTree" , method={ RequestMethod.POST, RequestMethod.GET})
     public String toTree(QueryModel m, ModelMap modelMap , HttpServletRequest request, HttpServletResponse response) {
 
-        this.assertHasViewPermission();
+        try {
+            this.assertHasViewPermission();
 
-        modelMap.put("entity" ,m);
+            modelMap.put("entity", m);
 
-        if (listAlsoSetCommonData) {
-            setCommonData(m,modelMap);
+            if (listAlsoSetCommonData) {
+                setCommonData(m, modelMap);
+            }
+
+
+            processQueryString(modelMap, request);
+
+            processPath(modelMap);
+
+            String pageName = this.getTreePageName();
+            if (StringUtils.isEmpty(pageName)) {
+                pageName = defaultTreePageName;
+            }
+            return viewName(pageName);
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-
-
-        processQueryString(modelMap, request);
-
-        processPath(modelMap);
-
-        String pageName = this.getTreePageName();
-        if(StringUtils.isEmpty(pageName)){
-            pageName = defaultTreePageName;
-        }
-        return viewName(pageName);
 
     }
 
@@ -164,66 +198,77 @@ public abstract class   BaseGroupCURDController<
     @ResponseBody
     public Object tree(QueryModel m , OnlyQuery query, Pages<QueryModel> pages , Model modelMap , HttpServletRequest request, HttpServletResponse response) {
 
-        this.assertHasViewPermission();
+        try {
+            this.assertHasViewPermission();
 
-        PK id = m.getId();
-        ReflectionSuper.setFieldValue(query , "id" , null);
+            PK id = m.getId();
+            ReflectionSuper.setFieldValue(query, "id", null);
 
-        pages.setPageNum(1);
-        pages.setPageSize(Integer.MAX_VALUE);
+            pages.setPageNum(1);
+            pages.setPageSize(Integer.MAX_VALUE);
 
-        processPages(pages , request);
+            processPages(pages, request);
 
-        Page<QueryModel> page = new Page<QueryModel>(pages.getPageNum(), pages.getPageSize());
-
-
-        ILoginUserEntity<PK> sessionUserVO = getSessionUser();
-
-        processOnlyQuery(query , m , sessionUserVO);
+            Page<QueryModel> page = new Page<QueryModel>(pages.getPageNum(), pages.getPageSize());
 
 
-        QueryWrapper<QueryModel> wrapper = (QueryWrapper<QueryModel>)buildQueryWrapper(query , m);
-        EntityAnnotation ea = m.getClass().getSuperclass().getAnnotation(EntityAnnotation.class);
-        if(ea == null || StringUtils.isEmpty(ea.parentColumnName())){
-            throw EnumErrorMsg.code_error.toException();
-        }
+            ILoginUserEntity<PK> sessionUserVO = getSessionUser();
+
+            processOnlyQuery(query, m, sessionUserVO);
 
 
-        if(id == null){
-            //增加查询条件，用括号包住
-            wrapper.nested((qw)->{
-                qw.eq( ea.parentColumnName() , "" );
-                qw.or();
-                qw.isNull(ea.parentColumnName());
-                return qw;
-            });
-
-        }else {
-            wrapper.eq(ea.parentColumnName() , id );
-        }
+            QueryWrapper<QueryModel> wrapper = (QueryWrapper<QueryModel>) buildQueryWrapper(query, m);
+            EntityAnnotation ea = m.getClass().getSuperclass().getAnnotation(EntityAnnotation.class);
+            if (ea == null || StringUtils.isEmpty(ea.parentColumnName())) {
+                throw EnumErrorMsg.code_error.toException();
+            }
 
 
-        page = (Page<QueryModel>)baseQueryService.page(page , wrapper );
+            if (id == null) {
+                //增加查询条件，用括号包住
+                wrapper.nested((qw) -> {
+                    qw.eq(ea.parentColumnName(), "");
+                    qw.or();
+                    qw.isNull(ea.parentColumnName());
+                    return qw;
+                });
 
-        processResult(page.getRecords());
+            } else {
+                wrapper.eq(ea.parentColumnName(), id);
+            }
 
 
-        List footer = buildFooter(page);
+            page = (Page<QueryModel>) baseQueryService.page(page, wrapper);
 
-        List<QueryModel> list =  page.getRecords() ;
+            processResult(page.getRecords());
 
-        if(list != null && !list.isEmpty()) {
-            for (QueryModel temp : list){
-                QueryWrapper<QueryModel> queryWrapper = new QueryWrapper<QueryModel>();
-                queryWrapper.eq(ea.parentColumnName() , temp.getId());
-                int count = this.baseQueryService.count(queryWrapper);
-                if(count == 0){
-                    temp.setState(EnumTreeState.OPEN.getTheValue());
+
+            List footer = buildFooter(page);
+
+            List<QueryModel> list = page.getRecords();
+
+            if (list != null && !list.isEmpty()) {
+                for (QueryModel temp : list) {
+                    QueryWrapper<QueryModel> queryWrapper = new QueryWrapper<QueryModel>();
+                    queryWrapper.eq(ea.parentColumnName(), temp.getId());
+                    int count = this.baseQueryService.count(queryWrapper);
+                    if (count == 0) {
+                        temp.setState(EnumTreeState.OPEN.getTheValue());
+                    }
                 }
             }
-        }
 
-        return list ;
+            return list;
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
+        }
 
     }
 
@@ -255,28 +300,45 @@ public abstract class   BaseGroupCURDController<
     @RequestMapping(value = "/{id}/view", method = RequestMethod.GET)
     public String showViewForm(ModelMap modelMap, @PathVariable("id") PK id, HttpServletRequest request, HttpServletResponse response) {
 
-        this.assertHasViewPermission();
+        try {
 
 
-        QueryWrapper<QueryModel> wrapper = new QueryWrapper<QueryModel>();
-        wrapper.eq("id" , id);
-        QueryModel m = baseQueryService.getOne(wrapper);
-        if(m == null){
-            throw EnumErrorMsg.no_auth.toException();
+            if(id == null || EntityUtil.isEmpty(id) ){
+                throw EnumErrorMsg.code_error.toException();
+            }
+
+            this.assertHasViewPermission();
+
+
+            QueryWrapper<QueryModel> wrapper = new QueryWrapper<QueryModel>();
+            wrapper.eq("id", id);
+            QueryModel m = baseQueryService.getOne(wrapper);
+            if (m == null) {
+                throw EnumErrorMsg.no_auth.toException();
+            }
+            processQueryString(modelMap, request);
+            setCommonData(m, modelMap);
+            customInfoByViewForm(m, modelMap);
+            modelMap.addAttribute("m", m);
+            modelMap.addAttribute("entity", m);
+
+
+            processPath(modelMap);
+            String pageName = this.getViewPageName();
+            if (StringUtils.isEmpty(pageName)) {
+                pageName = defaultViewPageName;
+            }
+            return viewName(pageName);
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-        processQueryString(modelMap,request);
-        setCommonData(m,modelMap);
-        customInfoByViewForm(m , modelMap);
-        modelMap.addAttribute("m", m);
-        modelMap.addAttribute("entity", m);
-
-
-        processPath(modelMap);
-        String pageName = this.getViewPageName();
-        if(StringUtils.isEmpty(pageName)){
-            pageName = defaultViewPageName;
-        }
-        return viewName(pageName);
     }
 
 
@@ -297,9 +359,9 @@ public abstract class   BaseGroupCURDController<
             setCommonData(m, modelMap);
 
             setInit(m);
-            customInfoByCreateForm(m, modelMap);
-
+            customInit(m, modelMap);
             this.baseRwService.processResult(m);
+            customInfoByCreateForm(m, modelMap);
 
             modelMap.addAttribute("m", m);
             modelMap.addAttribute("entity", m);
@@ -336,7 +398,13 @@ public abstract class   BaseGroupCURDController<
 
         try {
 
-            this.assertHasUpdatePermission();
+
+            if(id == null || EntityUtil.isEmpty(id) ){
+                throw EnumErrorMsg.code_error.toException();
+            }
+
+            //检查功能权限
+            this.assertHasViewPermission();
 
 
             QueryWrapper<RwModel> wrapper = new QueryWrapper<>();
@@ -381,72 +449,115 @@ public abstract class   BaseGroupCURDController<
     @RequestMapping(value = "/addOrUpdate", method = RequestMethod.GET)
     public String showAddOrUpdateForm(ModelMap modelMap, RwModel m, RwQuery q, HttpServletRequest request, HttpServletResponse response) {
 
-        this.assertHasEditPermission();
+        try {
+            this.assertHasAddorViewPermission();
 
 
-        QueryWrapper<RwModel> wrapper = q.buildWrapper();
-        this.buildRwWrapper(q, m) ;
-        List<RwModel> list = baseRwService.list(wrapper);
-        if(list != null && list.size() > 1){
-            throw EnumErrorMsg.code_error.toException();
-        }
-
-        boolean isInsert = true;
-        RwModel entity = m;
-        if(list != null && list.size() == 1){
-            entity = list.get(0);
-            isInsert = false;
-        }
-        processQueryString(modelMap,request);
-        setCommonData(entity,modelMap);
-
-        if(isInsert) {
-            entity = this.baseRwService.processResult(entity);
-            setInit(m);
-            customInfoByCreateForm(entity, modelMap);
-        }else{
-            customInfoByUpdateForm(entity, modelMap);
-        }
-
-
-        modelMap.addAttribute("m", entity);
-        modelMap.addAttribute("entity", entity);
-
-
-        processPath(modelMap);
-        String pageName = null;
-        if(isInsert) {
-            pageName = this.getAddPageName();
-            if (StringUtils.isEmpty(pageName)) {
-                pageName = defaultAddPageName;
+            QueryWrapper<RwModel> wrapper = q.buildWrapper();
+            this.buildRwWrapper(q, m);
+            List<RwModel> list = baseRwService.list(wrapper);
+            if (list != null && list.size() > 1) {
+                throw EnumErrorMsg.code_error.toException();
             }
-        }else {
-            pageName = this.getEditPageName();
-            if (StringUtils.isEmpty(pageName)) {
-                pageName = defaultEditPageName;
+
+            boolean isInsert = true;
+            RwModel entity = m;
+            if (list != null && list.size() == 1) {
+                entity = list.get(0);
+                isInsert = false;
             }
+            processQueryString(modelMap, request);
+            setCommonData(entity, modelMap);
+
+            if (isInsert) {
+                entity = this.baseRwService.processResult(entity);
+                setInit(m);
+                customInfoByCreateForm(entity, modelMap);
+            } else {
+                customInfoByUpdateForm(entity, modelMap);
+            }
+
+
+            modelMap.addAttribute("m", entity);
+            modelMap.addAttribute("entity", entity);
+
+
+            processPath(modelMap);
+            String pageName = null;
+            if (isInsert) {
+                pageName = this.getAddPageName();
+                if (StringUtils.isEmpty(pageName)) {
+                    pageName = defaultAddPageName;
+                }
+            } else {
+                pageName = this.getEditPageName();
+                if (StringUtils.isEmpty(pageName)) {
+                    pageName = defaultEditPageName;
+                }
+            }
+            return viewName(pageName);
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-        return viewName(pageName);
     }
 
 
 
     @RequestMapping(value = "/{id}/all", method = RequestMethod.GET)
-    public String showAllPage(ModelMap modelMap, @PathVariable("id") PK id, HttpServletRequest request, HttpServletResponse response) {
-        RwModel m = baseRwService.getById(id);
+    public String showAllPage(ModelMap modelMap, @PathVariable("id") PK id, RwQuery rwQuery , HttpServletRequest request, HttpServletResponse response) {
+
+        try {
+            RwModel m = null;
+
+            try {
+                if (id == null || EntityUtil.isEmpty(id)) {
+                    m = getModelByQuery(rwQuery);
+                } else {
+                    m = baseRwService.getById(id, false);
+                }
+            }catch (Exception e){
+
+            }
+
+            if(m == null){
+                m = getModelByQuery(rwQuery) ;
+            }
 
 
-        customInfoByAllPage(m , modelMap);
-        processQueryString(modelMap,request);
-        modelMap.addAttribute("m",  m);
-        modelMap.addAttribute("entity", m);
+            if(m == null){
+                throw EnumErrorMsg.code_error.toException();
+            }
 
-        processPath(modelMap);
-        String pageName = this.getAllPageName();
-        if(StringUtils.isEmpty(pageName)){
-            pageName = defaultAllPageName;
+
+
+            customInfoByAllPage(m, modelMap);
+            processQueryString(modelMap, request);
+            modelMap.addAttribute("m", m);
+            modelMap.addAttribute("entity", m);
+
+            processPath(modelMap);
+            String pageName = this.getAllPageName();
+            if (StringUtils.isEmpty(pageName)) {
+                pageName = defaultAllPageName;
+            }
+            return viewName(pageName);
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-        return viewName(pageName);
     }
 
 
@@ -535,9 +646,11 @@ public abstract class   BaseGroupCURDController<
 
         }catch(RuntimeException e){
             log.error(e.getMessage() , e);
+            recoveryResources(m,sessionUserVO);
             throw e;
         }catch(Exception e){
             log.error(e.getMessage() , e);
+            recoveryResources(m,sessionUserVO);
             throw DbException.DB_SAVE_SAME;
         }
 
@@ -572,7 +685,7 @@ public abstract class   BaseGroupCURDController<
             bbe.setVersionNo(((BaseBusinessEntity)temp).getVersionNo());
         }
 
-        //设置一些旧的值
+        //设置一些旧的值 ,或者比对新值和旧值是否有逻辑问题
         m = setOldValue(m , temp);
 
         //处理更新附加信息，如更新时间  更新人等
@@ -626,6 +739,123 @@ public abstract class   BaseGroupCURDController<
 
 
 
+
+    /**
+     * 显示更新或者新增页面
+     * @param modelMap
+     * @param m
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/addOrUpdate", method = {RequestMethod.POST , RequestMethod.PUT})
+    @ResponseBody
+    public Object addOrUpdate(ModelMap modelMap, RwModel m, RwQuery q, HttpServletRequest request, HttpServletResponse response) {
+
+
+
+        if (EntityUtil.isEmpty(m.getId())) {
+            try{
+
+                this.assertHasCreatePermission();
+
+                ILoginUserEntity<PK> sessionUserVO = getSessionUser();
+
+                this.gatherCreateInformation( m,  modelMap , sessionUserVO, request,  response);
+
+                //插入信息
+                insertInfo(m, sessionUserVO);
+
+                AjaxJson result =  AjaxJson.ok();
+                result.setId(m.getId());
+                return result;
+
+            }catch(RuntimeException re){
+                log.error(re.getMessage() ,re);
+                throw re;
+            }catch(Exception e){
+                log.error(e.getMessage() ,e);
+                throw new RuntimeException(e);
+            }
+        }else{
+
+            //检查功能权限
+            this.assertHasUpdatePermission();
+
+            ILoginUserEntity<PK> sessionUserVO = getSessionUser();
+
+            this.gatherUpdateInformation( m,  modelMap , sessionUserVO, request,  response);
+
+            QueryWrapper<RwModel> wrapper = new QueryWrapper<RwModel>();
+            wrapper.eq("id" , m.getId());
+            RwModel temp = baseRwService.getOne(wrapper);
+            if(temp == null){
+                throw EnumErrorMsg.no_auth.toException();
+            }
+
+            if(m instanceof BaseBusinessEntity) {
+                BaseBusinessEntity bbe = (BaseBusinessEntity)m;
+                bbe.setVersionNo(((BaseBusinessEntity)temp).getVersionNo());
+            }
+
+            //设置一些旧的值 ,或者比对新值和旧值是否有逻辑问题
+            m = setOldValue(m , temp);
+
+            //处理更新附加信息，如更新时间  更新人等
+            this.setUpdateInfo(m, sessionUserVO);
+
+            //设置更新时的一些属性信息
+            setCustomInfoByUpdate(m , sessionUserVO);
+
+
+            setChildFkInfo(m);
+
+
+            //处理创建的数据， 如反填状态名称，外键信息等
+            this.processBO(m);
+
+
+
+
+            boolean success = false;
+            try {
+
+                //检查数据合法性
+                checkEntityLegality(m , false , true , true);
+                Assert.notNull(m.getId(),"出现内部错误");
+
+                this.checkCanUpdate(m , sessionUserVO);
+
+                //检查重复数据
+                this.baseRwService.isExist(m);
+
+
+                success = baseRwService.updateById(m);
+
+            }catch(RuntimeException e){
+                log.error(e.getMessage() , e);
+                throw e;
+            }catch(Exception e){
+                log.error(e.getMessage() , e);
+                throw DbException.DB_SAVE_SAME;
+            }
+
+            if(!success){
+                throw DbException.DB_UPDATE_RESULT_0;
+            }else {
+
+                AjaxJson result =  AjaxJson.ok();
+                result.setId(m.getId());
+                return result;
+            }
+
+        }
+
+
+    }
+
+
+
     /**
      * 单条删除
      * @param id
@@ -637,38 +867,48 @@ public abstract class   BaseGroupCURDController<
     @ResponseBody
     public Object delete(@PathVariable("id") PK id , HttpServletRequest request, HttpServletResponse response) {
 
-
-        this.assertHasDeletePermission();
-
-
-        ILoginUserEntity<PK> sessionUserVO = getSessionUser();
-
-        QueryWrapper<RwModel> wrapper = new QueryWrapper<RwModel>();
-        wrapper.eq("id" , id);
-        setCustomInfoByDelete(wrapper , sessionUserVO);
-        RwModel m = baseRwService.getOne(wrapper);
-        if(m == null){
-            throw EnumErrorMsg.no_auth.toException();
-        }
-
-        baseRwService.specialHandler(m);
-
-        boolean success = false;
         try {
-            checkCanDelete(m, sessionUserVO);
-            success = baseRwService.deleteById(m);
-        }catch(RuntimeException e){
-            log.error(e.getMessage() , e);
-            throw e;
-        }catch(Exception e){
-            log.error(e.getMessage() , e);
-            throw DbException.DB_DELETE_RESULT_0;
-        }
+            this.assertHasDeletePermission();
 
-        if(!success){
-            throw EnumErrorMsg.no_auth.toException();
+
+            ILoginUserEntity<PK> sessionUserVO = getSessionUser();
+
+            QueryWrapper<RwModel> wrapper = new QueryWrapper<RwModel>();
+            wrapper.eq("id", id);
+            setCustomInfoByDelete(wrapper, sessionUserVO);
+            RwModel m = baseRwService.getOne(wrapper);
+            if (m == null) {
+                throw EnumErrorMsg.no_auth.toException();
+            }
+
+            baseRwService.specialHandler(m);
+
+            boolean success = false;
+            try {
+                checkCanDelete(m, sessionUserVO);
+                success = baseRwService.deleteById(m);
+            } catch (RuntimeException e) {
+                log.error(e.getMessage(), e);
+                throw e;
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw DbException.DB_DELETE_RESULT_0;
+            }
+
+            if (!success) {
+                throw EnumErrorMsg.no_auth.toException();
+            }
+            return AjaxJson.successAjax;
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-        return AjaxJson.successAjax;
     }
 
 
@@ -684,72 +924,81 @@ public abstract class   BaseGroupCURDController<
     @ResponseBody
     public Object deleteInBatch(@RequestParam(value = "ids", required = false) String ids, HttpServletRequest request, HttpServletResponse response) {
 
-
-        this.assertHasDeletePermission();
-
-        if(ids == null || ids.isEmpty()){
-            throw EnumErrorMsg.not_select_todelete.toException();
-        }
-
-        ILoginUserEntity<PK> sessionUserVO = getSessionUser();
-
-
-        QueryWrapper<RwModel> wrapper = new QueryWrapper<>();
-        String idList[] = ids.split( EnumSymbol.COMMA.getCode() );
-        wrapper.nested((qw)-> {
-            int index = 0;
-            for (String id : idList) {
-                if (index > 0) {
-                    qw.or();
-                }
-                qw.eq("id", id);
-                index++;
-            }
-            return qw;
-        });
-        setCustomInfoByDelete(wrapper , sessionUserVO);
-
-        List<RwModel> list = baseRwService.list(wrapper);
-
-        if(list == null && list.isEmpty()){
-            throw EnumErrorMsg.no_auth.toException();
-        }
-
-        List<RwModel> deleteList = new ArrayList<RwModel>();
-
-        for(RwModel m : list){
-            try{
-                this.checkCanDelete(m , sessionUserVO);
-                deleteList.add(m);
-            }catch(Exception e){
-
-            }
-        }
-
-        for(RwModel m : deleteList){
-            baseRwService.specialHandler(m);
-        }
-
-
-        boolean success = false;
         try {
-            if(deleteList != null && !deleteList.isEmpty()) {
-                success = baseRwService.deletesByIds(list);
+            this.assertHasDeletePermission();
+
+            if (ids == null || ids.isEmpty()) {
+                throw EnumErrorMsg.not_select_todelete.toException();
             }
-        }catch(RuntimeException e){
-            log.error(e.getMessage() , e);
-            throw e;
-        }catch(Exception e){
-            log.error(e.getMessage() , e);
-            throw DbException.DB_DELETE_RESULT_0;
+
+            ILoginUserEntity<PK> sessionUserVO = getSessionUser();
+
+
+            QueryWrapper<RwModel> wrapper = new QueryWrapper<>();
+            String idList[] = ids.split(EnumSymbol.COMMA.getCode());
+            wrapper.nested((qw) -> {
+                int index = 0;
+                for (String id : idList) {
+                    if (index > 0) {
+                        qw.or();
+                    }
+                    qw.eq("id", id);
+                    index++;
+                }
+                return qw;
+            });
+            setCustomInfoByDelete(wrapper, sessionUserVO);
+
+            List<RwModel> list = baseRwService.list(wrapper);
+
+            if (list == null && list.isEmpty()) {
+                throw EnumErrorMsg.no_auth.toException();
+            }
+
+            List<RwModel> deleteList = new ArrayList<RwModel>();
+
+            for (RwModel m : list) {
+                try {
+                    this.checkCanDelete(m, sessionUserVO);
+                    deleteList.add(m);
+                } catch (Exception e) {
+
+                }
+            }
+
+            for (RwModel m : deleteList) {
+                baseRwService.specialHandler(m);
+            }
+
+
+            boolean success = false;
+            try {
+                if (deleteList != null && !deleteList.isEmpty()) {
+                    success = baseRwService.deletesByIds(list);
+                }
+            } catch (RuntimeException e) {
+                log.error(e.getMessage(), e);
+                throw e;
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw DbException.DB_DELETE_RESULT_0;
+            }
+
+
+            if (!success) {
+                throw DbException.DB_DELETE_RESULT_0;
+            }
+            return AjaxJson.successAjax;
+        }catch (BizException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (RuntimeException e){
+            log.error(e.getMessage(),e);
+            throw  e;
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw  new RuntimeException(e);
         }
-
-
-
-        if(!success){
-            throw DbException.DB_DELETE_RESULT_0;
-        }
-        return AjaxJson.successAjax;
 
     }
 

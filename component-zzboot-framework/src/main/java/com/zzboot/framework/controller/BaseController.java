@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -25,11 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -42,6 +37,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public abstract class BaseController<PK extends Serializable> {
+
 
 
     protected final  Pattern pattern= Pattern.compile ("^([a-z]{2})_([A-Z]{2})$");
@@ -71,7 +67,10 @@ public abstract class BaseController<PK extends Serializable> {
         }
     }
 
-
+    /**
+     * 将前台传递过来的日期格式的字符串，自动转化为Date类型
+     *
+     */
     /*@InitBinder
     public void initBinder(ServletRequestDataBinder binder) {
         binder.registerCustomEditor(Date.class, new DateConvertEditor());

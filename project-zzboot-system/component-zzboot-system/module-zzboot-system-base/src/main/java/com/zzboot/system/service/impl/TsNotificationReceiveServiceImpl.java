@@ -2,7 +2,7 @@ package com.zzboot.system.service.impl;
 
 import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsNotificationReceiveBO;
 import com.zzboot.system.bo.TsUserBO;
@@ -61,7 +61,7 @@ public class TsNotificationReceiveServiceImpl extends SystemBaseServiceImpl<TsNo
 		}
 		try {
 			if(StringUtils.isEmpty(tsNotificationReceiveBO.getIsReadName()) && StringUtils.isNotEmpty(tsNotificationReceiveBO.getIsRead()) ) {
-				String dictName = tsDictService.getDictName(tsNotificationReceiveBO.getIsRead(),EnumDictType.YES_NO.getVal());
+				String dictName = tsDictService.getDictName(tsNotificationReceiveBO.getIsRead(), EnumSystemDictType.YES_NO.getVal());
 				tsNotificationReceiveBO.setIsReadName(dictName);
 			}
 		}catch(Exception e){
@@ -110,12 +110,12 @@ public class TsNotificationReceiveServiceImpl extends SystemBaseServiceImpl<TsNo
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.YES_NO.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.YES_NO.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsNotificationReceiveBOs.forEach(tsNotificationReceiveBO -> {
 			if(StringUtils.isEmpty(tsNotificationReceiveBO.getIsReadName()) && StringUtils.isNotEmpty(tsNotificationReceiveBO.getIsRead()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.YES_NO.getVal() + tsNotificationReceiveBO.getIsRead());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.YES_NO.getVal() + tsNotificationReceiveBO.getIsRead());
 				if(dict != null) {
 					tsNotificationReceiveBO.setIsReadName(dict.getDictName());
 				}

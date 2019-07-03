@@ -1,5 +1,6 @@
 package com.zzboot.framework;
 
+
 import com.zzboot.framework.core.Constant;
 import com.zzboot.framework.core.IModuleAutoRun;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContextEvent;
-import javax.servlet.annotation.WebListener;
 import java.util.Map;
 
 /**
@@ -15,7 +15,6 @@ import java.util.Map;
  * @author Administrator
  */
 @Slf4j
-@WebListener
 public class InitListener implements javax.servlet.ServletContextListener {
 
 

@@ -21,6 +21,7 @@ import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.util.base.java.GenericsHelper;
 import com.zzboot.util.base.java.ReflectionSuper;
 import com.zzboot.util.config.annotaions.GroupFieldAnnotation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,8 @@ import java.util.function.Function;
 /**
  * @author Administrator
  */
-public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK> ,  PK extends Serializable>  implements BaseService<T , PK> {
+@Slf4j
+public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends Serializable>  implements BaseService<T , PK> {
 
 
 
@@ -758,6 +760,7 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK> ,  PK extend
 
     @Override
     public T processResult(T t){
+        this.getServices()[0].processResult(t);
         return t;
     }
 
@@ -765,6 +768,7 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK> ,  PK extend
 
     @Override
     public List<T> processResult(List<T> ts) {
+        this.getServices()[0].processResult(ts);
         return ts;
     }
 

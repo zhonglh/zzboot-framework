@@ -4,7 +4,7 @@ import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.entity.EntityUtil;
 import com.zzboot.framework.core.enums.EnumErrorMsg;
 import com.zzboot.framework.core.exceptions.BizException;
-import com.zzboot.framework.enums.EnumDictType;
+import com.zzboot.system.enums.EnumSystemDictType;
 import com.zzboot.system.bo.TsDictBO;
 import com.zzboot.system.bo.TsOrganBO;
 import com.zzboot.system.bo.TsUserBO;
@@ -56,7 +56,7 @@ public class TsOrganServiceImpl extends SystemBaseServiceImpl<TsOrganBO,String> 
 
 		try {
 			if(StringUtils.isEmpty(tsOrganBO.getOrganTypeName()) && StringUtils.isNotEmpty(tsOrganBO.getOrganType()) ) {
-				String dictName = tsDictService.getDictName(tsOrganBO.getOrganType(),EnumDictType.ORGAN_TYPE.getVal());
+				String dictName = tsDictService.getDictName(tsOrganBO.getOrganType(), EnumSystemDictType.ORGAN_TYPE.getVal());
 				tsOrganBO.setOrganTypeName(dictName);
 			}
 		}catch(Exception e){
@@ -66,7 +66,7 @@ public class TsOrganServiceImpl extends SystemBaseServiceImpl<TsOrganBO,String> 
 
 		try {
 			if(StringUtils.isEmpty(tsOrganBO.getOrganStatusName()) && StringUtils.isNotEmpty(tsOrganBO.getOrganStatus()) ) {
-				String dictName = tsDictService.getDictName(tsOrganBO.getOrganStatus(),EnumDictType.ORGAN_STATUS.getVal());
+				String dictName = tsDictService.getDictName(tsOrganBO.getOrganStatus(), EnumSystemDictType.ORGAN_STATUS.getVal());
 				tsOrganBO.setOrganStatusName(dictName);
 			}
 		}catch(Exception e){
@@ -148,19 +148,19 @@ public class TsOrganServiceImpl extends SystemBaseServiceImpl<TsOrganBO,String> 
 
 
 
-		String[] dictTypes = new String[]{EnumDictType.ORGAN_TYPE.getVal(),EnumDictType.ORGAN_STATUS.getVal()};
+		String[] dictTypes = new String[]{EnumSystemDictType.ORGAN_TYPE.getVal(), EnumSystemDictType.ORGAN_STATUS.getVal()};
 		Map<String , TsDictBO> dictMap = tsDictService.allDict(dictTypes);
 
 		tsOrganBOs.forEach(tsOrganBO -> {
 			if(StringUtils.isEmpty(tsOrganBO.getOrganTypeName()) && StringUtils.isNotEmpty(tsOrganBO.getOrganType()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.ORGAN_TYPE.getVal() + tsOrganBO.getOrganType());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.ORGAN_TYPE.getVal() + tsOrganBO.getOrganType());
 				if(dict != null) {
 					tsOrganBO.setOrganTypeName(dict.getDictName());
 				}
 			}
 
 			if(StringUtils.isEmpty(tsOrganBO.getOrganStatusName()) && StringUtils.isNotEmpty(tsOrganBO.getOrganStatus()) ) {
-				TsDictBO dict = dictMap.get(EnumDictType.ORGAN_STATUS.getVal() + tsOrganBO.getOrganStatus());
+				TsDictBO dict = dictMap.get(EnumSystemDictType.ORGAN_STATUS.getVal() + tsOrganBO.getOrganStatus());
 				if(dict != null) {
 					tsOrganBO.setOrganStatusName(dict.getDictName());
 				}

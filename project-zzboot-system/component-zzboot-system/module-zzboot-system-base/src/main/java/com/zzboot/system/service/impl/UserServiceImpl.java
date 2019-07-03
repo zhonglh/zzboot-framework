@@ -7,6 +7,7 @@ import com.zzboot.framework.core.db.entity.ILoginUserEntity;
 import com.zzboot.framework.core.enums.EnumYesNo;
 import com.zzboot.framework.shiro.ILoginUserService;
 import com.zzboot.system.domain.TsUserEntity;
+import com.zzboot.system.enums.EnumUserStatus;
 import com.zzboot.system.query.TsPermitQuery;
 import com.zzboot.system.query.TsUserQuery;
 import com.zzboot.system.query.TsUserRoleQuery;
@@ -20,6 +21,7 @@ import com.zzboot.system.service.TsUserRoleService;
 import com.zzboot.system.service.TsUserService;
 import com.zzboot.system.service.VsUserPermitService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authc.LockedAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +90,14 @@ public class UserServiceImpl implements ILoginUserService<String> {
             VsUserPermitQuery query = new VsUserPermitQueryImpl();
             query.userId(loginUserEntity.getId());
             return (List<ILoginPermitEntity>)vsUserPermitService.list(query.buildWrapper());
+        }
+    }
+
+    @Override
+    public void checkUserStatus(ILoginUserEntity loginUserEntity) {
+
+        if(EnumUserStatus.forbidden.getVal().equals(loginUserEntity.getUserStatus())){
+            throw new LockedAccountException("帐号被禁用,请联系管理员!");
         }
     }
 }

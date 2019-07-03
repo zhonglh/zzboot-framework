@@ -16,6 +16,7 @@ import com.zzboot.framework.core.db.base.daointerface.BaseDAO;
 import com.zzboot.framework.core.db.base.service.BaseService;
 import com.zzboot.framework.core.db.entity.BaseEntity;
 import com.zzboot.util.base.java.GenericsHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,8 @@ import java.util.stream.Collectors;
 /**
  * @author Administrator
  */
-public abstract class BaseServiceImpl<T extends BaseEntity<PK> ,  PK extends Serializable>  implements BaseService<T , PK> {
+@Slf4j
+public abstract class BaseServiceImpl<T extends BaseEntity<PK>,  PK extends Serializable>  implements BaseService<T , PK> {
 
 
 
@@ -413,7 +415,9 @@ public abstract class BaseServiceImpl<T extends BaseEntity<PK> ,  PK extends Ser
 
     @Override
     public void deletesByIdsAfter(Collection<T> ts){
-
+        for(T t : ts){
+            deleteByIdAfter(t);
+        }
     }
 
     @Override

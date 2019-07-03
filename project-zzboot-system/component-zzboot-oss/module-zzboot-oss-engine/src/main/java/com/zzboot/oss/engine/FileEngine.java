@@ -9,6 +9,7 @@ import com.zzboot.oss.vo.FileVO;
 import com.zzboot.util.web.IpUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,7 @@ import java.nio.file.StandardCopyOption;
  */
 
 @Component("FILESYSTEM")
+@ConditionalOnProperty(prefix="zzboot" ,  name = "ossEngine" , havingValue = "FILESYSTEM" , matchIfMissing = true)
 public  class FileEngine extends AbstractEngine implements StorageProcess {
 
     @Autowired
@@ -163,11 +165,6 @@ public  class FileEngine extends AbstractEngine implements StorageProcess {
     }
 
 
-
-    @Override
-    public boolean isActive() {
-        return config.isActive();
-    }
 
 
     @Override

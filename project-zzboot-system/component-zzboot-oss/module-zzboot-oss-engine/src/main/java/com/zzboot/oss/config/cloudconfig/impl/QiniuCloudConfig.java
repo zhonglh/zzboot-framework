@@ -2,6 +2,7 @@ package com.zzboot.oss.config.cloudconfig.impl;
 
 import com.zzboot.oss.config.cloudconfig.CloudConfig;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 
@@ -9,31 +10,26 @@ import org.springframework.stereotype.Component;
  * 七牛云设置
  * @author Administrator
  */
+@PropertySource("classpath:oss-cloud-qiniuyun.properties")
 @Component
 public class QiniuCloudConfig implements CloudConfig {
 
 
-    @Value("#{qiniuyun.domain}")
     private String domain;
 
 
-    @Value("#{qiniuyun.prefix}")
     private String prefix;
 
 
-    @Value("#{qiniuyun.bucketName}")
     private String bucketName;
 
     private String endPoint;
 
-    @Value("#{qiniuyun.accessKey}")
     private String accessKeyId;
 
-    @Value("#{qiniuyun.secretKey}")
     private String accessKeySecret;
 
 
-    @Value("#{qiniuyun.active}")
     private boolean active;
 
 
@@ -77,8 +73,4 @@ public class QiniuCloudConfig implements CloudConfig {
         return null;
     }
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
 }

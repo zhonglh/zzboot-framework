@@ -14,6 +14,7 @@ import com.zzboot.oss.enums.EnumFileType;
 import com.zzboot.oss.vo.FileVO;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +26,7 @@ import java.io.InputStream;
  * @author Administrator
  */
 @Component("CLOUD_QINIU")
+@ConditionalOnProperty(prefix="zzboot" ,  name = "ossEngine" , havingValue = "CLOUD_QINIU" )
 public class QiniuYunEngine extends AbstractEngine implements StorageProcess {
 
     private UploadManager uploadManager;
@@ -39,13 +41,11 @@ public class QiniuYunEngine extends AbstractEngine implements StorageProcess {
 
     @PostConstruct
     private void init() {
-        if(config.isActive()) {
             Configuration cfg = new Configuration(Zone.autoZone());
             uploadManager = new UploadManager(cfg);
             auth = Auth.create(config.getCloudSecretId(), config.getCloudSecretKey());
             token = auth.uploadToken(config.getCloudBucketName());
             bucketManager = new BucketManager(auth, cfg);
-        }
 
     }
 
@@ -83,10 +83,6 @@ public class QiniuYunEngine extends AbstractEngine implements StorageProcess {
         }
     }
 
-    @Override
-    public boolean isActive() {
-        return config.isActive();
-    }
 
 
     @Override

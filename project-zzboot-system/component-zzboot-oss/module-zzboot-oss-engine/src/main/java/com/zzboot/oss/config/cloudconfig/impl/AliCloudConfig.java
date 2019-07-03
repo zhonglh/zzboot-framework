@@ -1,6 +1,7 @@
 package com.zzboot.oss.config.cloudconfig.impl;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.zzboot.oss.config.cloudconfig.CloudConfig;
@@ -9,32 +10,24 @@ import com.zzboot.oss.config.cloudconfig.CloudConfig;
  * 阿里云设置
  * @author Administrator
  */
+@PropertySource("classpath:oss-cloud-aliyun.properties")
 @Component
 public class AliCloudConfig implements CloudConfig{
 
-    @Value("#{aliyun.domain}")
     private String domain;
 
 
-    @Value("#{aliyun.prefix}")
     private String prefix;
 
 
-    @Value("#{aliyun.bucketName}")
     private String bucketName;
 
-    @Value("#{aliyun.endPoint}")
     private String endPoint;
 
-    @Value("#{aliyun.accessKeyId}")
     private String accessKeyId;
 
-    @Value("#{aliyun.accessKeySecret}")
     private String accessKeySecret;
 
-
-    @Value("#{aliyun.active}")
-    private boolean active;
 
 
     @Override
@@ -77,8 +70,4 @@ public class AliCloudConfig implements CloudConfig{
         return null;
     }
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
 }

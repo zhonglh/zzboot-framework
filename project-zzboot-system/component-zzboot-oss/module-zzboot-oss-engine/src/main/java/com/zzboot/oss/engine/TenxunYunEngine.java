@@ -19,6 +19,7 @@ import com.zzboot.oss.enums.EnumFileType;
 import com.zzboot.oss.vo.FileVO;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +32,7 @@ import java.util.concurrent.*;
  * @author Administrator
  */
 @Component("CLOUD_TENXEN")
+@ConditionalOnProperty(prefix="zzboot" ,  name = "ossEngine" , havingValue = "CLOUD_TENXEN" )
 public class TenxunYunEngine extends AbstractEngine implements StorageProcess {
 
     @Autowired
@@ -42,12 +44,10 @@ public class TenxunYunEngine extends AbstractEngine implements StorageProcess {
     @PostConstruct
     private void init() {
 
-        if(config.isActive()) {
             COSCredentials credentials = new BasicCOSCredentials(config.getCloudSecretId(), config.getCloudSecretKey());
             // 初始化客户端配置 设置bucket所在的区域，华南：gz 华北：tj 华东：sh
             ClientConfig clientConfig = new ClientConfig(new Region(config.getCloudRegion()));
             client = new COSClient(credentials, clientConfig);
-        }
 
     }
 
@@ -122,10 +122,6 @@ public class TenxunYunEngine extends AbstractEngine implements StorageProcess {
         return client.getObject(config.getCloudBucketName(), filename);
     }
 
-    @Override
-    public boolean isActive() {
-        return config.isActive();
-    }
 
 
 

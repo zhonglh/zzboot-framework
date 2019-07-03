@@ -1,7 +1,6 @@
 package com.zzboot.oss.config;
 
-import com.zzboot.oss.OssConfig;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 
@@ -9,16 +8,14 @@ import org.springframework.stereotype.Component;
  * 文件系统 设置
  * @author Administrator
  */
+@PropertySource("classpath:oss-file.properties")
 @Component
-public class FileSystemConfig implements OssConfig {
+public class FileSystemConfig  {
 
 
-    @Value("#{fileystem.root}")
     private String root;
 
 
-    @Value("#{fileystem.active}")
-    private boolean active;
 
     public String getRoot() {
         return root;
@@ -28,12 +25,4 @@ public class FileSystemConfig implements OssConfig {
         this.root = root;
     }
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }

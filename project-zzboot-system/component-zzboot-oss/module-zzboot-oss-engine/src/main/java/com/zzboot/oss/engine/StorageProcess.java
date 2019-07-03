@@ -55,11 +55,6 @@ public interface StorageProcess {
 
 
 
-    /**
-     * Engine 是否有效
-     * @return
-     */
-    public boolean isActive();
 
     public EnumFileEngine getEngine();
 

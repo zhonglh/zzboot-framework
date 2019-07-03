@@ -116,3 +116,7 @@ shiro:
     validationInterval: 10
     cacheName: shiro-activeSessionCache
 
+
+zzboot:
+  ossEngine: FILESYSTEM
+

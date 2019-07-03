@@ -6,7 +6,7 @@ import com.zzboot.oss.OssConfig;
  * 云配置
  * @author Administrator
  */
-public interface CloudConfig extends OssConfig {
+public interface CloudConfig {
 
 
     /**

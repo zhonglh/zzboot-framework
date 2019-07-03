@@ -7,6 +7,7 @@ import com.zzboot.oss.enums.EnumFileEngine;
 import com.zzboot.oss.enums.EnumFileType;
 import com.zzboot.oss.vo.FileVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import java.io.InputStream;
  * @author Administrator
  */
 @Component("CLOUD_ALI")
+@ConditionalOnProperty(prefix="zzboot" ,  name = "ossEngine" , havingValue = "CLOUD_ALI" )
 public class AliYunEngine extends AbstractEngine implements StorageProcess {
 
     @Autowired
@@ -31,11 +33,10 @@ public class AliYunEngine extends AbstractEngine implements StorageProcess {
 
     @PostConstruct
     private void init() {
-        if(config.isActive()) {
             client = new OSSClient(config.getCloudEndPoint(),
                     config.getCloudSecretId(),
                     config.getCloudSecretKey());
-        }
+
     }
 
     @Override
@@ -71,10 +72,6 @@ public class AliYunEngine extends AbstractEngine implements StorageProcess {
         }
     }
 
-    @Override
-    public boolean isActive() {
-        return config.isActive();
-    }
 
     @Override
     public EnumFileEngine getEngine() {

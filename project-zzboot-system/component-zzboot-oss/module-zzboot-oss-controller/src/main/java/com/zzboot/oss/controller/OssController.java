@@ -366,12 +366,10 @@ public class OssController extends BaseController<String> {
         }
 
         for(StorageProcess sp : storageProcesss){
-            if(sp.isActive()){
                 Component component = sp.getClass().getAnnotation(Component.class);
                 if(component.value().equals(EnumFileEngine.FILESYSTEM.name())){
                     return sp;
                 }
-            }
         }
 
         throw new InternalException("OSS 没有配置正确");

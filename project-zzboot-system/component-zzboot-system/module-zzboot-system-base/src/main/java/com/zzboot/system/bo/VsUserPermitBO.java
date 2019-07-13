@@ -26,7 +26,7 @@ import java.io.Serializable;
 */
 @EntityAnnotation(value="用户许可" , resource = "system.userpermit"  ,businessName = ""    ,businessKey = { "" }    )
 @TableName(value="vs_user_permit" , resultMap = "VsUserPermitResultMap")
-public class VsUserPermitBO extends VsUserPermitEntity implements Serializable , IBoEntity, ILoginPermitEntity {
+public class VsUserPermitBO extends VsUserPermitEntity implements Serializable , IBoEntity, ILoginPermitEntity<String> {
 
 
     public boolean isTable() {

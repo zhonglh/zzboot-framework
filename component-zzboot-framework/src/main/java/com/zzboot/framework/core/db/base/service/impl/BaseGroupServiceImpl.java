@@ -3,6 +3,7 @@ package com.zzboot.framework.core.db.base.service.impl;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,15 +31,15 @@ import org.springframework.util.ReflectionUtils;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Administrator
  */
 @Slf4j
 public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends Serializable>  implements BaseService<T , PK> {
-
-
 
 
 
@@ -145,7 +146,7 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends
                             this.getServices()[index].isExist((BaseEntity<PK>) obj);
                         }
                     }else {
-                            this.getServices()[index].isExist((BaseEntity<PK>)val);
+                        this.getServices()[index].isExist((BaseEntity<PK>)val);
                     }
                 }
                 index++ ;
@@ -194,7 +195,10 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends
                 }
                 index ++;
             }
+
+            saveAfter(entity);
         }
+
 
 
         return result;
@@ -216,7 +220,11 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends
         }
 
         if(!isGroup()){
-            return this.getServices()[0].saveBatch(entityList,batchSize);
+            boolean result = this.getServices()[0].saveBatch(entityList, batchSize);
+            for(T t : entityList) {
+                saveAfter(t);
+            }
+            return result;
         }else {
 
             for (T entity : entityList) {
@@ -299,6 +307,7 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends
                 }
                 index ++ ;
             }
+            this.deleteByIdAfter(entity);
         }
 
         return result;
@@ -453,6 +462,8 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends
 
                 index ++ ;
             }
+
+            this.updateAfter(entity);
         }
 
         return true;
@@ -482,6 +493,7 @@ public abstract class BaseGroupServiceImpl<T extends BaseEntity<PK>,  PK extends
         }else {
             for (T entity : entityList) {
                 updateById(entity);
+
             }
             return true;
         }

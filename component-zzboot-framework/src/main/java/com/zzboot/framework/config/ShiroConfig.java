@@ -199,6 +199,8 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 身份认证失败，则跳转到登录页面的配置
         shiroFilterFactoryBean.setLoginUrl(shiroBean.getLoginUrl());
+        //身份认证成功，跳转到首页
+        shiroFilterFactoryBean.setSuccessUrl(shiroBean.getIndexUrl());
         // 权限认证失败，则跳转到指定页面
         shiroFilterFactoryBean.setUnauthorizedUrl(shiroBean.getUnauthorizedUrl());
         // Shiro连接约束配置，即过滤链的定义
@@ -289,6 +291,8 @@ public class ShiroConfig {
     public ShiroDialect shiroDialect() {
         return new ShiroDialect();
     }
+
+
 
     /**
      * 开启Shiro注解通知器

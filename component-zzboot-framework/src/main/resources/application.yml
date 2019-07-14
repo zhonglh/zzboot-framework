@@ -3,6 +3,8 @@ server:
   port: 8080
 
   tomcat:
+    max-threads: 128
+    min-spare-threads: 5
     uri-encoding: UTF-8
   servlet:
     # 项目contextPath
@@ -30,8 +32,21 @@ spring:
 
   servlet:
     multipart:
-      max-request-size: 100MB
+      max-request-size: 500MB
       max-file-size: 100MB
+
+    #shiro 报错修改的地方
+    max-connections: 200000
+    max-http-post-size: 9000000
+
+
+
+  jackson:
+    time-zone: GMT+8
+
+  cache:
+    type: ehcache
+
 
   redis:
     # Redis数据库索引（默认为0）
@@ -49,7 +64,7 @@ spring:
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
-    mode: LEGACYHTML5
+    mode: LEGACYHTML5 #格式要求不严谨
     encoding: UTF-8
     cache: false
     servlet:
@@ -89,11 +104,11 @@ thread:
 shiro:
   user:
     # 登录地址
-    loginUrl: /login
+    loginUrl: /login/toLogin
     # 权限认证失败地址
     unauthorizedUrl: /unauth
     # 首页地址
-    indexUrl: /index
+    indexUrl: /main/home
     # 验证码开关
     captchaEnabled: true
     # 验证码类型 math 数组计算 char 字符
@@ -119,4 +134,17 @@ shiro:
 
 zzboot:
   ossEngine: FILESYSTEM
+
+
+
+jwt:
+  header: Authorization
+  secret: mySecret
+  # token 过期时间 2个小时
+  expiration: 7200000
+  auth:
+    # 授权路径
+    path: /login
+    # 获取用户信息
+    account: /info
 

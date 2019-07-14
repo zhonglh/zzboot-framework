@@ -73,6 +73,14 @@ public class ShiroBean {
     private String loginUrl;
 
 
+
+    /**
+     * 主页
+     */
+    @Value("${shiro.user.indexUrl}")
+    private String indexUrl;
+
+
     /**
      * 权限认证失败地址
      */
@@ -162,6 +170,15 @@ public class ShiroBean {
 
     public void setUnauthorizedUrl(String unauthorizedUrl) {
         this.unauthorizedUrl = unauthorizedUrl;
+    }
+
+
+    public String getIndexUrl() {
+        return indexUrl;
+    }
+
+    public void setIndexUrl(String indexUrl) {
+        this.indexUrl = indexUrl;
     }
 
     public String getCacheName() {

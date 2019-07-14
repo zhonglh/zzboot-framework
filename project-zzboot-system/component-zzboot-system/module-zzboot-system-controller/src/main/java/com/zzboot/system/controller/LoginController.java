@@ -9,6 +9,7 @@ import com.zzboot.framework.core.enums.EnumOperationType;
 import com.zzboot.framework.events.LoginLogEvent;
 import com.zzboot.framework.shiro.utils.ShiroUtils;
 import com.zzboot.util.web.IpUtil;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,13 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value = "/toLogin" ,method = RequestMethod.GET)
     public String toLogin() {
-        return "login/login";
+
+        if ((null != SecurityUtils.getSubject() && SecurityUtils.getSubject().isAuthenticated()) || SecurityUtils.getSubject().isRemembered()) {
+            return "redirect:/main/home";
+        }else {
+
+            return "login/login";
+        }
     }
 
     @RequestMapping("/captcha")

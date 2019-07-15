@@ -12,6 +12,7 @@
     <artifactId>web-zzboot-system</artifactId>
 
     <name>web-zzboot-system</name>
+
     <url>http://www.example.com</url>
 
     <properties>

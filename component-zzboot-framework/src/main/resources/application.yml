@@ -78,7 +78,7 @@ spring:
 
 #mybatis plus 配置
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml;classpath:mapper/**/*.xml
+  mapper-locations: classpath:mapper/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: com.**.domain;com.**.entity;com.**.bo
   global-config:
@@ -106,7 +106,7 @@ shiro:
     # 登录地址
     loginUrl: /login/toLogin
     # 权限认证失败地址
-    unauthorizedUrl: /unauth
+    unauthorizedUrl: /error/unauth
     # 首页地址
     indexUrl: /main/home
     # 验证码开关

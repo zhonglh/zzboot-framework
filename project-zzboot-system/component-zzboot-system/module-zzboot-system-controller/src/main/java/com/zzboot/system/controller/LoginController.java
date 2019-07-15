@@ -40,18 +40,21 @@ public class LoginController extends BaseController {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Autowired
-    private Producer producer;
+    //@Autowired
+    //private Producer producer;
 
 
 
 
     @RequestMapping(value = "/toLogin" ,method = RequestMethod.GET)
     public String toLogin() {
-
-        if ((null != SecurityUtils.getSubject() && SecurityUtils.getSubject().isAuthenticated()) || SecurityUtils.getSubject().isRemembered()) {
-            return "redirect:/main/home";
-        }else {
+        try {
+            if ((null != ShiroUtils.getSubject() && ShiroUtils.getSubject().isAuthenticated()) || ShiroUtils.getSubject().isRemembered()) {
+                return "redirect:/main/home";
+            } else {
+                return "login/login";
+            }
+        }catch (Exception e){
 
             return "login/login";
         }
@@ -63,16 +66,16 @@ public class LoginController extends BaseController {
         response.setContentType("image/jpeg");
 
         //生成文字验证码
-        String text = producer.createText();
+        //String text = producer.createText();
 
         //生成图片验证码
-        BufferedImage image = producer.createImage(text);
+        //BufferedImage image = producer.createImage(text);
 
         //保存到shiro session
-        ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+        //ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
 
         ServletOutputStream out = response.getOutputStream();
-        ImageIO.write(image, "jpg", out);
+        //ImageIO.write(image, "jpg", out);
     }
 
 

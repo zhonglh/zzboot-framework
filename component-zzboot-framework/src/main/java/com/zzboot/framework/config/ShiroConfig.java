@@ -215,9 +215,9 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/druid/**" , "anon");
         filterChainDefinitionMap.put("/captcha/captchaImage**" , "anon");
         // 退出 logout地址，shiro去清除session
-        filterChainDefinitionMap.put("/logout" , "logout");
+        filterChainDefinitionMap.put("/login/logout" , "logout");
         // 不需要拦截的访问
-        filterChainDefinitionMap.put("/login" , "anon,captchaValidate");
+        filterChainDefinitionMap.put("/login/toLogin" , "anon,captchaValidate");
 
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("onlineSession" , onlineSessionFilter());

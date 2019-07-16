@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 
+	<meta content="text/html;charset=UTF-8"/>
 	<!-- 让360浏览器默认选择webkit内核 -->
 	<meta name="renderer" content="webkit"/>
-	<meta content="text/html;charset=UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<!-- 告诉浏览器响应屏幕宽度 -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -20,6 +20,23 @@
 	<!-- 软键盘控件start -->
 	<link th:href="@{/login/keypad/css/framework/form.css}" rel="stylesheet" type="text/css"/>
 
+	<style type="text/css">
+		/*
+       body{
+        -webkit-transform: rotate(-3deg);
+        -moz-transform: rotate(-3deg);
+        -o-transform: rotate(-3deg);
+        padding-top:20px;
+        }
+        */
+		.cavs{
+			z-index:1;
+			position: fixed;
+			width:95%;
+			margin-left: 20px;
+			margin-right: 20px;
+		}
+	</style>
 
 
 </head>
@@ -105,17 +122,17 @@
 
 		<div class="camera_wrap camera_emboss" id="camera_slide">
 			<!-- 背景图片 -->
-			<div data-src="[[${pageContext.request.getContextPath()}]]login/images/banner_slide_01.jpg"></div>
-			<div data-src="${#httpServletRequest.getContextPath()}/login/images/banner_slide_02.jpg"></div>
-			<div data-src="${pageContext.request.getContextPath()}/login/images/banner_slide_03.jpg"></div>
-			<div data-src="${#ctx}/login/images/banner_slide_04.jpg"></div>
-			<div data-src="${pageContext.request.getContextPath()}/login/images/banner_slide_05.jpg"></div>
+			<div th:data-src="@{/login/images/banner_slide_01.jpg}"></div>
+			<div th:data-src="@{/login/images/banner_slide_02.jpg}"></div>
+			<div th:data-src="@{/login/images/banner_slide_03.jpg}"></div>
+			<div th:data-src="@{/login/images/banner_slide_04.jpg}"></div>
+			<div th:data-src="@{/login/images/banner_slide_05.jpg}"></div>
 		</div>
 	</div>
 
 
 
-	<script type="text/javascript" th:src="@{/login/js/jquery-1.5.1.min.js}"></script>
+	<script type="text/javascript"  th:src="@{/login/js/jquery-1.7.2.js}"></script>
 	<script type="text/javascript" th:src="@{/login/js/bootstrap.min.js}"></script>
 	<script type="text/javascript" th:src="@{/login/js/jquery.easing.1.3.js}"></script>
 	<script type="text/javascript" th:src="@{/login/js/jquery.mobile.customized.min.js}"></script>
@@ -130,6 +147,8 @@
 	<script type="text/javascript" th:src="@{/login/keypad/js/form/keypad.js}"></script>
 	<script type="text/javascript" th:src="@{/login/keypad/js/framework.js}"></script>
 	<!-- 软键盘控件end -->
+
+
 
 	<script type="text/javascript">
 

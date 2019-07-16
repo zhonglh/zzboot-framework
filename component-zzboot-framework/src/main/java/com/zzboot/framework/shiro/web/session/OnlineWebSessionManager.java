@@ -78,7 +78,9 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager {
 
         try {
             onlineUserService = SpringUtil.getBean(IOnlineUserService.class);
-            userOnlineList = onlineUserService.selectOnlineUserByExpired(expiredDate);
+            if(onlineUserService != null) {
+                userOnlineList = onlineUserService.selectOnlineUserByExpired(expiredDate);
+            }
         }catch (Exception e){
 
         }

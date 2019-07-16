@@ -124,7 +124,9 @@ public class OnlineSessionDAO extends EnterpriseCacheSessionDAO {
                 return;
             }
             onlineSession.setOnlineStatus(EnumOnlineStatus.OFF_LINE);
-            onlineUserService.deleteSession((String) onlineSession.getId());
+            if(onlineUserService != null) {
+                onlineUserService.deleteSession((String) onlineSession.getId());
+            }
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }

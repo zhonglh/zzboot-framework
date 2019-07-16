@@ -8,7 +8,7 @@ server:
     uri-encoding: UTF-8
   servlet:
     # 项目contextPath
-    context-path: /
+    context-path: /zzboot
     session:
       cookie:
         http-only: false
@@ -136,15 +136,15 @@ zzboot:
   ossEngine: FILESYSTEM
 
 
-
-jwt:
-  header: Authorization
-  secret: mySecret
-  # token 过期时间 2个小时
-  expiration: 7200000
-  auth:
-    # 授权路径
-    path: /login
-    # 获取用户信息
-    account: /info
-
+#
+#jwt:
+#  header: Authorization
+#  secret: mySecret
+#  # token 过期时间 2个小时
+#  expiration: 7200000
+#  auth:
+#    # 授权路径
+#    path: /login
+#    # 获取用户信息
+#    account: /info
+#

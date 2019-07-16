@@ -206,18 +206,27 @@ public class ShiroConfig {
         // Shiro连接约束配置，即过滤链的定义
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 对静态资源设置匿名访问
-        filterChainDefinitionMap.put("/favicon.ico**" , "anon");
+
+
         filterChainDefinitionMap.put("/css/**" , "anon");
+        filterChainDefinitionMap.put("/**/*.css", "anon");
         filterChainDefinitionMap.put("/docs/**" , "anon");
         filterChainDefinitionMap.put("/fonts/**" , "anon");
         filterChainDefinitionMap.put("/img/**" , "anon");
+        filterChainDefinitionMap.put("/image/**" , "anon");
+        filterChainDefinitionMap.put("/**/*.png", "anon");
+        filterChainDefinitionMap.put("/**/*.jpg", "anon");
+        filterChainDefinitionMap.put("/*.icon" , "anon");
         filterChainDefinitionMap.put("/js/**" , "anon");
+        filterChainDefinitionMap.put("/**/*.js" , "anon");
         filterChainDefinitionMap.put("/druid/**" , "anon");
         filterChainDefinitionMap.put("/captcha/captchaImage**" , "anon");
+        filterChainDefinitionMap.put("/static/**", "anon");
+
         // 退出 logout地址，shiro去清除session
         filterChainDefinitionMap.put("/login/logout" , "logout");
         // 不需要拦截的访问
-        filterChainDefinitionMap.put("/login/toLogin" , "anon,captchaValidate");
+        filterChainDefinitionMap.put("/login/**" , "anon,captchaValidate");
 
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("onlineSession" , onlineSessionFilter());

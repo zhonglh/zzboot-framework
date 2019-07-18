@@ -9,8 +9,10 @@ import com.zzboot.framework.core.enums.EnumOperationType;
 import com.zzboot.framework.events.LoginLogEvent;
 import com.zzboot.framework.shiro.utils.ShiroUtils;
 import com.zzboot.util.web.IpUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -24,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
@@ -33,6 +36,7 @@ import java.util.Date;
  * 处理登录信息
  * @author Administrator
  */
+@Slf4j
 @RequestMapping("/login")
 @Controller
 public class LoginController extends BaseController {
@@ -40,16 +44,20 @@ public class LoginController extends BaseController {
     @Autowired
     ApplicationContext applicationContext;
 
-    //@Autowired
-    //private Producer producer;
+    @Autowired
+    private Producer captchaProducer;
 
+    @Autowired
+    private Producer captchaProducerMath;
 
 
 
     @RequestMapping(value = "/toLogin" ,method = RequestMethod.GET)
     public String toLogin() {
         try {
-            if ((null != ShiroUtils.getSubject() && ShiroUtils.getSubject().isAuthenticated()) || ShiroUtils.getSubject().isRemembered()) {
+            if (
+                    (null != ShiroUtils.getSubject() && ShiroUtils.getSubject().isAuthenticated()) ||
+                            ShiroUtils.getSubject().isRemembered()) {
                 return "redirect:/main/home";
             } else {
                 return "login/login";
@@ -61,21 +69,47 @@ public class LoginController extends BaseController {
     }
 
     @RequestMapping("/captcha")
-    public void captcha(HttpServletResponse response)throws ServletException, IOException {
-        response.setHeader("Cache-Control", "no-store, no-cache");
-        response.setContentType("image/jpeg");
+    public void captcha(HttpServletRequest request ,HttpServletResponse response)throws ServletException, IOException {
 
-        //生成文字验证码
-        //String text = producer.createText();
 
-        //生成图片验证码
-        //BufferedImage image = producer.createImage(text);
+        ServletOutputStream out = null;
+        try {
+            Session session = ShiroUtils.getSession() ;
+            response.setDateHeader("Expires", 0);
+            response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+            response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+            response.setHeader("Pragma", "no-cache");
+            response.setContentType("image/jpeg");
 
-        //保存到shiro session
-        //ShiroUtils.setSessionAttribute(Constants.KAPTCHA_SESSION_KEY, text);
+            String type = request.getParameter("type");
+            String capStr;
+            String code = null;
+            BufferedImage bi = null;
+            if ("math".equals(type)) {
+                String capText = captchaProducerMath.createText();
+                capStr = capText.substring(0, capText.lastIndexOf('@'));
+                code = capText.substring(capText.lastIndexOf('@') + 1);
+                bi = captchaProducerMath.createImage(capStr);
+            } else if ("char".equals(type)) {
+                capStr = code = captchaProducer.createText();
+                bi = captchaProducer.createImage(capStr);
+            }
+            session.setAttribute(Constants.KAPTCHA_SESSION_KEY, code);
+            out = response.getOutputStream();
+            ImageIO.write(bi, "jpg", out);
+            out.flush();
 
-        ServletOutputStream out = response.getOutputStream();
-        //ImageIO.write(image, "jpg", out);
+        } catch (Exception e) {
+            log.error("验证码生成异常!", e);
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                log.error("验证码生成异常!", e);
+            }
+        }
     }
 
 

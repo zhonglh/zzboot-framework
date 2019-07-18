@@ -220,13 +220,13 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/js/**" , "anon");
         filterChainDefinitionMap.put("/**/*.js" , "anon");
         filterChainDefinitionMap.put("/druid/**" , "anon");
-        filterChainDefinitionMap.put("/captcha/captchaImage**" , "anon");
+        filterChainDefinitionMap.put("/login/captcha" , "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
 
         // 退出 logout地址，shiro去清除session
         filterChainDefinitionMap.put("/login/logout" , "logout");
         // 不需要拦截的访问
-        filterChainDefinitionMap.put("/login/**" , "anon,captchaValidate");
+        filterChainDefinitionMap.put("/login/login" , "anon,captchaValidate");
 
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("onlineSession" , onlineSessionFilter());

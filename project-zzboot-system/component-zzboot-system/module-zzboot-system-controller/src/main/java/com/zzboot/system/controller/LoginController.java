@@ -90,7 +90,7 @@ public class LoginController extends BaseController {
                 capStr = capText.substring(0, capText.lastIndexOf('@'));
                 code = capText.substring(capText.lastIndexOf('@') + 1);
                 bi = captchaProducerMath.createImage(capStr);
-            } else if ("char".equals(type)) {
+            } else  {
                 capStr = code = captchaProducer.createText();
                 bi = captchaProducer.createImage(capStr);
             }
@@ -100,6 +100,7 @@ public class LoginController extends BaseController {
             out.flush();
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("验证码生成异常!", e);
         } finally {
             try {
@@ -117,10 +118,10 @@ public class LoginController extends BaseController {
 
     @RequestMapping("/login")
     @ResponseBody
-    public Object login(String loginName, String loginPassword , HttpServletRequest request) {
+    public Object login(String loginName, String loginPassword ,String code ,Boolean rememberMe , HttpServletRequest request) {
         try{
             Subject subject = ShiroUtils.getSubject();
-            UsernamePasswordToken token = new UsernamePasswordToken(loginName, loginPassword);
+            UsernamePasswordToken token = new UsernamePasswordToken(loginName, loginPassword , rememberMe);
             subject.login(token);
 
 

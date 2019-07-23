@@ -212,10 +212,11 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/**/*.css", "anon");
         filterChainDefinitionMap.put("/docs/**" , "anon");
         filterChainDefinitionMap.put("/fonts/**" , "anon");
-        filterChainDefinitionMap.put("/img/**" , "anon");
-        filterChainDefinitionMap.put("/image/**" , "anon");
+        filterChainDefinitionMap.put("/img*/**" , "anon");
+        filterChainDefinitionMap.put("/image*/**" , "anon");
         filterChainDefinitionMap.put("/**/*.png", "anon");
         filterChainDefinitionMap.put("/**/*.jpg", "anon");
+        filterChainDefinitionMap.put("/**/*.gif", "anon");
         filterChainDefinitionMap.put("/*.icon" , "anon");
         filterChainDefinitionMap.put("/js/**" , "anon");
         filterChainDefinitionMap.put("/**/*.js" , "anon");

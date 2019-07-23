@@ -71,7 +71,9 @@ spring:
       content-type:  text/html
 
   main:
+    #当有自定义bean的时候，是否允许覆盖springboot的默认bean，默认为false
     allow-bean-definition-overriding: true
+
 
 
 

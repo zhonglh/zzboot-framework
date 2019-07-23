@@ -52,7 +52,7 @@
 		<!-- 登录 -->
 		<div id="windows1">
 			<div id="loginbox" >
-				<form th:action="@{/login/login}" method="post" id="loginForm">
+				<form onsubmit="return false;" method="post" id="loginForm">
 					<div class="control-group normal_text">
 						<h3>
 							<img th:src="@{/login/logo.png}" alt="Logo" />
@@ -168,32 +168,126 @@
 
 	<script type="text/javascript" th:inline="javascript">
 
-		var context = [[@{/}]];
 
-		var message="[[${message}]]";
-		if(message != undefined && message != null && message != "null" && message != ""){
-			 alert(message);
+
+		//session获取iframe处理
+		$(function () {
+			//判断当前是否为顶层，如果不是，则顶层页面重定向到当前页面
+			if (window != top) {
+				top.location.href = location.href;
+			}
+		});
+
+
+
+		var isProcessing = false;
+		var context = [[@{/}]];
+		var ctx = context ;
+
+		var message = "[[${message}]]";
+		if (message != undefined && message != null && message != "null" && message != "") {
+			alert(message);
 		}
 
 
 		<!--  验证码 -->
-		$('#codeImg').click(function() {
-			var url =context+"/login/captcha?type=math&s=" + Math.random();
+		$('#codeImg').click(function () {
+			var url = context + "/login/captcha?type=math&s=" + Math.random();
 			$("#codeImg").attr("src", url);
 		});
 
 
-		function loginForm(){
-			$("#loginForm").submit();
+		function loginForm() {
+
+			if (isProcessing) {
+				return false;
+			}
+
+
+			//定义登录请求参数
+			var params = {};
+			// 有效性校验
+			var field = $('input[name="loginName"]');
+			if (0 == jQuery.trim(field.val()).length) {
+				showMessage('请输入“账号”！');
+				field.focus();
+
+				return false;
+			}
+			//登录请求参数中定义用户名及设置value
+			params.loginName = $('input[name="loginName"]').val();
+
+
+			field = $('input[name="loginPassword"]');
+			if (0 == jQuery.trim(field.val()).length) {
+				showMessage('请输入“密码”！');
+				field.focus();
+
+				return false;
+			}
+			//登录请求参数中定义密码及设置value
+			params.loginPassword = $('input[name="loginPassword"]').val();
+
+			if ('0' == '1') {
+				field = $('input[name="code"]');
+				if (0 == jQuery.trim(field.val()).length) {
+					showMessage('请输入“验证码”！');
+					field.focus();
+
+					return false;
+				} else if (5 != field.val().length) {
+					showMessage('请输入5位“验证码”！');
+					field.focus();
+
+					return false;
+				}
+				//登录请求参数中定义验证码及设置value
+				params.code = $('input[name="code"]').val()
+			}
+			// 登录处理
+			isProcessing = true;
+			$('#btnLogin').text('登录中......').prop('disabled', 'true');
+
+			var url = ctx + 'login/login';
+
+
+			ajaxPost(url, params, function (rsp, textStatus, jqXHR) {
+				if (rsp.success) {
+					$.cookie('loginName', $('input[name="loginName"]').val(), {expires: 365});
+
+					window.location.href = ctx +'main/home';
+				} else {
+					if ('0' == '1') {
+						refreshCode();
+					}
+					isProcessing = false;
+					$('#btnLogin').text('登录').prop('disabled', '');
+
+					showMessage(rsp.msg);
+				}
+			}, function () {
+
+				isProcessing = false;
+				$('#btnLogin').text('登录').prop('disabled', '');
+
+				showMessage("请求服务出现错误,请重试");
+			});
+
+			return false;
 		}
 
-		//session获取iframe处理
-        $(function () {
-           //判断当前是否为顶层，如果不是，则顶层页面重定向到当前页面
-            if (window != top) {
-                top.location.href = location.href;
-            }
-        });  
+
+		/**
+		 * 显示登录错误信息
+		 */
+		function showMessage(msg)
+		{
+			$('#divMsg').html('<i class="icon icon-volume-down" style="font-size: 20px; vertical-align: bottom;"></i>&nbsp;' + msg)
+					.show()
+					.stop(true).fadeOut(500).fadeIn(500).fadeOut(500).fadeIn(500);
+		}
+
+
 	</script>
 </body>
 </html>

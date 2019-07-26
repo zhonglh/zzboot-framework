@@ -158,6 +158,10 @@
 	<script type="text/javascript" th:src="@{/login/js/jQuery.md5.js}"></script>
 	<script type="text/javascript" th:src="@{/login/js/jquery.tips.js}"></script>
 	<script type="text/javascript" th:src="@{/login/js/jquery.cookie.js}"></script>
+
+
+	<script type="text/javascript" th:src="@{/project/js/common-constant.js}"></script>
+	<script type="text/javascript" th:src="@{/project/js/common-tool.js}"></script>
 	
 	<!-- 软键盘控件start -->
 	<script type="text/javascript" th:src="@{/login/keypad/js/form/keypad.js}"></script>
@@ -251,7 +255,7 @@
 			var url = ctx + 'login/login';
 
 
-			ajaxPost(url, params, function (rsp, textStatus, jqXHR) {
+			syncPost(url, params, function (rsp, textStatus, jqXHR) {
 				if (rsp.success) {
 					$.cookie('loginName', $('input[name="loginName"]').val(), {expires: 365});
 
